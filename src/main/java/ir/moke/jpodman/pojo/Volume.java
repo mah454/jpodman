@@ -40,16 +40,8 @@ public class Volume {
         return mountPoint;
     }
 
-    public void setMountPoint(String mountPoint) {
-        this.mountPoint = mountPoint;
-    }
-
     public String getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Map<String, String> getLabels() {
@@ -62,10 +54,6 @@ public class Volume {
 
     public String getScope() {
         return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
     }
 
     public Map<String, String> getOptions() {
