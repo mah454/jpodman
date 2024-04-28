@@ -43,7 +43,7 @@ public class VolumeManager {
     }
 
     public static void prune() {
-        CommandExecutor.execute("podman", "volume", "rm", "--force");
+        CommandExecutor.execute("podman", "volume", "prune", "--force");
     }
 
     public static InputStream export(String name) {

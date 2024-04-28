@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ir.moke.jpodman.format.ContainerDateTimeDeserializer;
 
 import java.io.File;
@@ -21,7 +20,6 @@ public class JsonUtils {
 
     static {
         objectMapper = JsonMapper.builder()
-                .addModule(new JavaTimeModule())
                 .addModule(new SimpleModule().addDeserializer(LocalDateTime.class,new ContainerDateTimeDeserializer()))
                 .configure(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
@@ -74,5 +72,9 @@ public class JsonUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 }
