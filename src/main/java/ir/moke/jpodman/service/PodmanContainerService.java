@@ -1,10 +1,12 @@
 package ir.moke.jpodman.service;
 
+import ir.moke.jpodman.pojo.Container;
+import ir.moke.jpodman.pojo.ContainerInfo;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Map;
+import java.util.List;
 
 @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 @Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
@@ -20,7 +22,9 @@ public interface PodmanContainerService {
 
     @DELETE
     @Path("containers/{name}")
-    Response containerDelete(@PathParam("name") String name);
+    Response containerDelete(@PathParam("name") String name,
+                             @QueryParam("force") @DefaultValue("false") boolean force,
+                             @QueryParam("v") @DefaultValue("false") boolean deleteVolumes);
 
     @GET
     @Path("containers/{name}/json")
@@ -39,9 +43,27 @@ public interface PodmanContainerService {
     Response containerUnpause(@PathParam("name") String name);
 
 
+    /**
+     * @param name       the name or ID of the container
+     * @param flow       Keep connection after returning logs.
+     * @param stdout     Return logs from stdout
+     * @param stderr     Return logs from stderr
+     * @param timestamps Add timestamps to every log line
+     * @param tail       Only return this number of log lines from the end of the logs
+     * @param since      Only return logs since this time, as a UNIX timestamp
+     * @param until      Only return logs before this time, as a UNIX timestamp
+     * @return {@link Response}
+     */
     @GET
     @Path("containers/{name}/logs")
-    Response containerLogs(@PathParam("name") String name);
+    Response containerLogs(@PathParam("name") String name,
+                           @QueryParam("flow") Boolean flow,
+                           @QueryParam("stdout") Boolean stdout,
+                           @QueryParam("stderr") Boolean stderr,
+                           @QueryParam("timestamps") boolean timestamps,
+                           @QueryParam("tail") String tail,
+                           @QueryParam("since") String since,
+                           @QueryParam("until") String until);
 
     @POST
     @Path("containers/{name}/rename")
@@ -57,8 +79,7 @@ public interface PodmanContainerService {
 
     @GET
     @Path("containers/{name}/stats")
-    Response containerStats(@PathParam("name") String name,
-                            @QueryParam("stream") @DefaultValue("true") boolean stream);
+    Response containerStats(@PathParam("name") String name);
 
     @POST
     @Path("containers/{name}/stop")
@@ -66,34 +87,16 @@ public interface PodmanContainerService {
 
     @GET
     @Path("containers/{name}/top")
-    Response containerListProcesses(@PathParam("name") String name,
-                                    @QueryParam("stream") @DefaultValue("true") boolean stream);
+    Response containerListProcesses(@PathParam("name") String name);
 
 
     @POST
     @Path("containers/create")
-    Response containerCreate(@PathParam("name") String name,
-                             @QueryParam("command") String command,
-                             @QueryParam("dns_option") String[] dnsOption,
-                             @QueryParam("dns_search") String[] dnsSearch,
-                             @QueryParam("dns_server") String[] dnsServer,
-                             @QueryParam("entrypoint") String entrypoint,
-                             @QueryParam("env") Map<String, String> environments,
-                             @QueryParam("env_host") boolean useHostEnvironments,
-                             @QueryParam("expose") Map<String, String> expose,
-                             @QueryParam("hostAdd") String[] hosts,
-                             @QueryParam("hostname") String hostname,
-                             @QueryParam("image") String image,
-                             @QueryParam("pod") String pod,
-                             @QueryParam("privileged") Boolean privileged,
-                             @QueryParam("remove") Boolean remove,
-                             @QueryParam("user") String user,
-                             @QueryParam("work_dir") String workDir,
-                             @QueryParam("volumes_from") String[] volumesFrom);
+    Response containerCreate(Container container);
 
     @GET
     @Path("containers/json")
-    Response containerList(@PathParam("all") Boolean all, @QueryParam("pod") Boolean pod);
+    List<ContainerInfo> containerList(@PathParam("all") Boolean all, @QueryParam("pod") Boolean pod);
 
     @POST
     @Path("containers/prune")

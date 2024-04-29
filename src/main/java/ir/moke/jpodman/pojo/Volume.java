@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Volume {
     @JsonProperty("Name")
     private String name;
@@ -19,6 +20,8 @@ public class Volume {
     private String scope;
     @JsonProperty("Options")
     private Map<String, String> options;
+    @JsonProperty("Anonymous")
+    private Boolean anonymous;
 
     public String getName() {
         return name;
@@ -62,5 +65,9 @@ public class Volume {
 
     public void setOptions(Map<String, String> options) {
         this.options = options;
+    }
+
+    public Boolean getAnonymous() {
+        return anonymous;
     }
 }

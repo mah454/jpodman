@@ -10,7 +10,6 @@ import java.util.List;
 
 public class VolumeTest {
 
-    private static final String IMAGE_REGISTRY = "registry.docker.ir/";
     private static final Podman podman = new Podman();
     private static final PodmanVolumeService podmanVolumeService = podman.api(PodmanVolumeService.class);
 
