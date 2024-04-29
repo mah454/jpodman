@@ -96,7 +96,7 @@ public interface PodmanContainerService {
 
     @GET
     @Path("containers/json")
-    List<ContainerInfo> containerList(@PathParam("all") Boolean all, @QueryParam("pod") Boolean pod);
+    List<ContainerInfo> containerList(@QueryParam("all") Boolean all, @QueryParam("pod") Boolean pod);
 
     @POST
     @Path("containers/prune")
@@ -108,7 +108,7 @@ public interface PodmanContainerService {
 
     @POST
     @Path("play/kube")
-    Response playKube(@PathParam("network") String network, @PathParam("start") Boolean start);
+    Response playKube(@QueryParam("network") String network, @QueryParam("start") Boolean start);
 
 
 }

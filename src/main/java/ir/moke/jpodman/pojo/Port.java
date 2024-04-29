@@ -1,10 +1,18 @@
 package ir.moke.jpodman.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Port {
+    @JsonProperty("host_port")
     private Long hostPort;
+    @JsonProperty("container_port")
     private Long containerPort;
+    @JsonProperty("protocol")
     private String protocol;
+    @JsonProperty("host_ip")
     private String hostIp;
+    @JsonProperty("range")
+    private Long range;
 
     public Long getHostPort() {
         return hostPort;
@@ -36,5 +44,13 @@ public class Port {
 
     public void setHostIp(String hostIp) {
         this.hostIp = hostIp;
+    }
+
+    public Long getRange() {
+        return range;
+    }
+
+    public void setRange(Long range) {
+        this.range = range;
     }
 }

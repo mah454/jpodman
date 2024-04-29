@@ -16,7 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class Podman implements Closeable {
-    private static final String baseURL = "http://127.0.0.1:9000/v5.0.0.0/libpod/";
+    private static final String baseURL = "http://127.0.0.1:9000/v5/libpod/";
 
     private static final Client client;
 

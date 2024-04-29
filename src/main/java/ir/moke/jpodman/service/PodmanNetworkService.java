@@ -3,9 +3,12 @@ package ir.moke.jpodman.service;
 import ir.moke.jpodman.pojo.NetworkConnectContainer;
 import ir.moke.jpodman.pojo.Network;
 import ir.moke.jpodman.pojo.NetworkDisconnectContainer;
+import ir.moke.jpodman.pojo.NetworkInfo;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
 
 @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 @Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
@@ -13,7 +16,7 @@ public interface PodmanNetworkService {
 
     @DELETE
     @Path("networks/{name}")
-    Response networkList(@PathParam("name") String name, @QueryParam("force") @DefaultValue("false") Boolean force);
+    Response networkRemove(@PathParam("name") String name, @QueryParam("force") @DefaultValue("false") Boolean force);
 
     @POST
     @Path("networks/{name}/connect")
@@ -29,9 +32,9 @@ public interface PodmanNetworkService {
 
     @POST
     @Path("networks/create")
-    Response networkCreate(@QueryParam("name") String name, Network network);
+    NetworkInfo networkCreate(Network network);
 
-    @POST
+    @GET
     @Path("networks/json")
-    Response networkList();
+    List<NetworkInfo> networkList();
 }

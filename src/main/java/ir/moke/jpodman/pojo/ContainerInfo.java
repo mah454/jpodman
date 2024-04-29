@@ -39,7 +39,7 @@ public class ContainerInfo {
     @JsonProperty("Namespaces")
     private Map<String, String> namespaces;
     @JsonProperty("Networks")
-    private String networks;
+    private List<String> networks;
     @JsonProperty("Pid")
     private Long pid;
     @JsonProperty("Pod")
@@ -47,7 +47,7 @@ public class ContainerInfo {
     @JsonProperty("PodName")
     private String podName;
     @JsonProperty("Ports")
-    private String ports;
+    private List<Port> ports;
     @JsonProperty("Size")
     private String size;
     @JsonProperty("StartedAt")
@@ -56,6 +56,8 @@ public class ContainerInfo {
     private String state;
     @JsonProperty("Status")
     private String status;
+    @JsonProperty("CIDFile")
+    private String cidFile;
 
     public Boolean getAutoRemove() {
         return autoRemove;
@@ -121,7 +123,7 @@ public class ContainerInfo {
         return namespaces;
     }
 
-    public String getNetworks() {
+    public List<String> getNetworks() {
         return networks;
     }
 
@@ -137,7 +139,7 @@ public class ContainerInfo {
         return podName;
     }
 
-    public String getPorts() {
+    public List<Port> getPorts() {
         return ports;
     }
 
@@ -155,5 +157,9 @@ public class ContainerInfo {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getCidFile() {
+        return cidFile;
     }
 }

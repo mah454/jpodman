@@ -22,6 +22,14 @@ public class Volume {
     private Map<String, String> options;
     @JsonProperty("Anonymous")
     private Boolean anonymous;
+    @JsonProperty("MountCount")
+    private Integer mountCount;
+    @JsonProperty("NeedsCopyUp")
+    private Boolean needsCopyUp;
+    @JsonProperty("NeedsChown")
+    private Boolean needsChown;
+    @JsonProperty("LockNumber")
+    private Integer lockNumber;
 
     public String getName() {
         return name;
@@ -69,5 +77,21 @@ public class Volume {
 
     public Boolean getAnonymous() {
         return anonymous;
+    }
+
+    public Integer getMountCount() {
+        return mountCount;
+    }
+
+    public Boolean getNeedsCopyUp() {
+        return needsCopyUp;
+    }
+
+    public Boolean getNeedsChown() {
+        return needsChown;
+    }
+
+    public Integer getLockNumber() {
+        return lockNumber;
     }
 }

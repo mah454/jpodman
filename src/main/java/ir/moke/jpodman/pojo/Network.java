@@ -2,9 +2,12 @@ package ir.moke.jpodman.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.Map;
 
 public class Network {
+    @JsonProperty("Name")
+    private String name;
     @JsonProperty(namespace = "DisableDNS")
     private Boolean disableDNS;
     @JsonProperty(namespace = "Driver")
@@ -19,10 +22,16 @@ public class Network {
     private String macVLAN;
     @JsonProperty(namespace = "Options")
     private Map<String, String> options;
-    @JsonProperty(namespace = "Range")
-    private IPNet range;
-    @JsonProperty(namespace = "Subnet")
-    private IPNet subnet;
+    @JsonProperty(namespace = "subnets")
+    private List<Subnet> subnets;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Boolean getDisableDNS() {
         return disableDNS;
@@ -80,19 +89,12 @@ public class Network {
         this.options = options;
     }
 
-    public IPNet getRange() {
-        return range;
+    public List<Subnet> getSubnets() {
+        return subnets;
     }
 
-    public void setRange(IPNet range) {
-        this.range = range;
+    public void setSubnets(List<Subnet> subnets) {
+        this.subnets = subnets;
     }
 
-    public IPNet getSubnet() {
-        return subnet;
-    }
-
-    public void setSubnet(IPNet subnet) {
-        this.subnet = subnet;
-    }
 }
