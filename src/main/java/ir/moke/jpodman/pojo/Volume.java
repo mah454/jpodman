@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Volume {
     @JsonProperty("Name")
     private String name;
