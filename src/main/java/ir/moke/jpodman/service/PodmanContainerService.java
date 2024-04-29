@@ -102,13 +102,4 @@ public interface PodmanContainerService {
     @Path("containers/prune")
     Response containerPrune();
 
-    @GET
-    @Path("generate/kube")
-    Response generateKube();
-
-    @POST
-    @Path("play/kube")
-    Response playKube(@QueryParam("network") String network, @QueryParam("start") Boolean start);
-
-
 }

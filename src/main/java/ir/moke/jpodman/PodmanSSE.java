@@ -41,6 +41,16 @@ public class PodmanSSE implements Closeable {
         }
     }
 
+    public static Stream<String> systemEvents() {
+        URI targetURI = baseURI.resolve("events");
+        try {
+            var request = HttpRequest.newBuilder(targetURI).GET().build();
+            return client.send(request, HttpResponse.BodyHandlers.ofLines()).body();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void close() {
         client.close();
