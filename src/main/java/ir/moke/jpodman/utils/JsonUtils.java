@@ -6,12 +6,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import ir.moke.jpodman.format.ContainerDateTimeDeserializer;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class JsonUtils {
@@ -20,7 +17,6 @@ public class JsonUtils {
 
     static {
         objectMapper = JsonMapper.builder()
-                .addModule(new SimpleModule().addDeserializer(LocalDateTime.class,new ContainerDateTimeDeserializer()))
                 .configure(JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION, true)
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
                 .configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true)
