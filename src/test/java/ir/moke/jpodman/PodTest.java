@@ -3,18 +3,20 @@ package ir.moke.jpodman;
 import ir.moke.jpodman.pojo.Container;
 import ir.moke.jpodman.pojo.Pod;
 import ir.moke.jpodman.pojo.PodInfo;
+import ir.moke.jpodman.pojo.PodStats;
 import ir.moke.jpodman.service.PodmanContainerService;
 import ir.moke.jpodman.service.PodmanPodService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PodTest {
 
-    private static final Podman podman = new Podman("127.0.0.1",9000);
+    private static final Podman podman = new Podman("127.0.0.1", 9000);
     private static final PodmanPodService podmanPodService = podman.api(PodmanPodService.class);
     private static final PodmanContainerService podmanContainerService = podman.api(PodmanContainerService.class);
 
@@ -38,7 +40,7 @@ public class PodTest {
         container.setImage("postgres");
         container.setPod("sample");
         try (Response containerResponse = podmanContainerService.containerCreate(container)) {
-            System.out.println(containerResponse.getStatus());
+            Assertions.assertEquals(201, containerResponse.getStatus());
             System.out.println(containerResponse.readEntity(String.class));
         }
     }
@@ -85,7 +87,7 @@ public class PodTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void podUnpause() {
         try (Response response = podmanPodService.podUnpause("sample")) {
             System.out.println(response.getStatus());
@@ -95,14 +97,14 @@ public class PodTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void podList() {
         List<PodInfo> podInfos = podmanPodService.podList();
         Assertions.assertFalse(podInfos.isEmpty());
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void podKill() {
         podStart();
         try (Response response = podmanPodService.podKill("sample")) {
@@ -113,9 +115,26 @@ public class PodTest {
     }
 
     @Test
+    @Order(7)
+    public void podStats() {
+        List<PodStats> podStats = podmanPodService.podStats(true, Collections.emptyList());
+        Assertions.assertFalse(podStats.isEmpty());
+    }
+
+    @Test
     @Order(20)
     public void podRemove() {
         try (Response response = podmanPodService.podRemove("sample", true)) {
+            System.out.println(response.getStatus());
+            System.out.println(response.readEntity(String.class));
+            Assertions.assertEquals(200, response.getStatus());
+        }
+    }
+
+    @Test
+    @Order(21)
+    public void podPrune() {
+        try (Response response = podmanPodService.podPrune()) {
             System.out.println(response.getStatus());
             System.out.println(response.readEntity(String.class));
             Assertions.assertEquals(200, response.getStatus());

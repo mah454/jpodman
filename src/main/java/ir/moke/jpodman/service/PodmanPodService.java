@@ -2,6 +2,7 @@ package ir.moke.jpodman.service;
 
 import ir.moke.jpodman.pojo.Pod;
 import ir.moke.jpodman.pojo.PodInfo;
+import ir.moke.jpodman.pojo.PodStats;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -70,7 +71,7 @@ public interface PodmanPodService {
 
     @GET
     @Path("pods/stats")
-    Response podStats(@QueryParam("all") boolean all, @QueryParam("namesOrIDs") List<String> namesOrIDs);
+    List<PodStats> podStats(@QueryParam("all") boolean all, @QueryParam("namesOrIDs") List<String> namesOrIDs);
 
     @POST
     @Path("pods/create")
