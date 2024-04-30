@@ -10,15 +10,18 @@ import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonP
 import org.glassfish.jersey.media.sse.SseFeature;
 
 import java.io.Closeable;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class Podman implements Closeable {
-    private static final String baseURL = "http://127.0.0.1:9000/v5/libpod/";
-
+    private static final String baseURL = "http://%s:%s/v5/libpod/";
     private static final Client client;
+
+    private final String host;
+    private final int port;
+
+    public Podman(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
     static {
         JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
@@ -33,7 +36,7 @@ public class Podman implements Closeable {
     }
 
     public <T> T api(Class<T> clazz) {
-        return WebResourceFactory.newResource(clazz, client.target(baseURL));
+        return WebResourceFactory.newResource(clazz, client.target(baseURL.formatted(host, port)));
     }
 
     @Override

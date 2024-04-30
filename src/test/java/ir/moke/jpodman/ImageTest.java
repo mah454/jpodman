@@ -12,7 +12,7 @@ import java.util.List;
 public class ImageTest {
 
     private static final String IMAGE_REGISTRY = "registry.docker.ir/";
-    private static final Podman podman = new Podman();
+    private static final Podman podman = new Podman("127.0.0.1", 9000);
     private static final PodmanImageService podmanImageService = podman.api(PodmanImageService.class);
 
     @Test

@@ -10,7 +10,7 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VolumeTest {
 
-    private static final Podman podman = new Podman();
+    private static final Podman podman = new Podman("127.0.0.1",9000);
     private static final PodmanVolumeService podmanVolumeService = podman.api(PodmanVolumeService.class);
 
     @Test

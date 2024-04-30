@@ -9,19 +9,19 @@ import java.net.http.HttpResponse;
 import java.util.stream.Stream;
 
 public class PodmanSSE implements Closeable {
-    private static final String baseURL = "http://127.0.0.1:9000/v5.0.0.0/libpod/";
-    private static final URI baseURI;
+    private static final String baseURL = "http://%s:%s/v5/libpod/";
     private static final HttpClient client = HttpClient.newHttpClient();
+    private final URI baseURI;
 
-    static {
+    public PodmanSSE(String host, int port) {
         try {
-            baseURI = new URI(baseURL);
+            baseURI = new URI(baseURL.formatted(host, port));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Stream<String> containerStats(String name) {
+    public Stream<String> containerStats(String name) {
         URI targetURI = baseURI.resolve("containers/%s/stats".formatted(name));
         try {
             var request = HttpRequest.newBuilder(targetURI).GET().build();
@@ -31,7 +31,7 @@ public class PodmanSSE implements Closeable {
         }
     }
 
-    public static Stream<String> containerTop(String name) {
+    public Stream<String> containerTop(String name) {
         URI targetURI = baseURI.resolve("containers/%s/top".formatted(name));
         try {
             var request = HttpRequest.newBuilder(targetURI).GET().build();
@@ -41,7 +41,7 @@ public class PodmanSSE implements Closeable {
         }
     }
 
-    public static Stream<String> systemEvents() {
+    public Stream<String> systemEvents() {
         URI targetURI = baseURI.resolve("events");
         try {
             var request = HttpRequest.newBuilder(targetURI).GET().build();

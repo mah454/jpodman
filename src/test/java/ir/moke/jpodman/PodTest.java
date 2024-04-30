@@ -14,7 +14,7 @@ import java.util.Map;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PodTest {
 
-    private static final Podman podman = new Podman();
+    private static final Podman podman = new Podman("127.0.0.1",9000);
     private static final PodmanPodService podmanPodService = podman.api(PodmanPodService.class);
     private static final PodmanContainerService podmanContainerService = podman.api(PodmanContainerService.class);
 

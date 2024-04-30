@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SystemTest {
 
-    private static final Podman podman = new Podman();
+    private static final Podman podman = new Podman("127.0.0.1",9000);
+    private static final PodmanSSE podmanSSE = new PodmanSSE("127.0.0.1",9000);
     private static final PodmanSystemService podmanSystemService = podman.api(PodmanSystemService.class);
 
     @Test
@@ -44,7 +45,7 @@ public class SystemTest {
     @Test
     @Order(2)
     public void event() {
-        Stream<String> stream = PodmanSSE.systemEvents();
+        Stream<String> stream = podmanSSE.systemEvents();
         stream.forEach(System.out::println);
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class NetworkTest {
 
-    private static final Podman podman = new Podman();
+    private static final Podman podman = new Podman("127.0.0.1",9000);
     private static final PodmanNetworkService podmanNetworkService = podman.api(PodmanNetworkService.class);
 
     @Test

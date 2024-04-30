@@ -14,7 +14,8 @@ import java.util.stream.Stream;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContainerTest {
     private static final String IMAGE_NAME = "registry.docker.ir/postgres";
-    private static final Podman podman = new Podman();
+    private static final Podman podman = new Podman("127.0.0.1",9000);
+    private static final PodmanSSE podmanSSE = new PodmanSSE("127.0.0.1",9000);
     private static final PodmanContainerService podmanContainerService = podman.api(PodmanContainerService.class);
     private static final PodmanVolumeService podmanVolumeService = podman.api(PodmanVolumeService.class);
     private static final PodmanImageService podmanImageService = podman.api(PodmanImageService.class);
@@ -91,14 +92,14 @@ public class ContainerTest {
     @Test
     @Order(4)
     public void containerState() {
-        Stream<String> stream = PodmanSSE.containerStats("test");
+        Stream<String> stream = podmanSSE.containerStats("test");
         stream.limit(3).forEach(Assertions::assertNotNull);
     }
 
     @Test
     @Order(5)
     public void containerTop() {
-        Stream<String> stream = PodmanSSE.containerTop("test");
+        Stream<String> stream = podmanSSE.containerTop("test");
         stream.limit(3).forEach(Assertions::assertNotNull);
     }
 
