@@ -43,7 +43,7 @@ public interface PodmanImageService {
     Response imageUntag(@PathParam("name") String name);
 
 
-    @GET
+    @POST
     @Path("images/prune")
     Response imagePrune();
 }

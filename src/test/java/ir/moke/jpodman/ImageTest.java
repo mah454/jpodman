@@ -53,4 +53,12 @@ public class ImageTest {
         List<SearchImage> searchImageList = podmanImageService.imageSearch("mysql");
         Assertions.assertTrue(searchImageList.size() > 1);
     }
+
+    @Test
+    @Order(5)
+    public void imagePrune() {
+        try (Response response = podmanImageService.imagePrune()) {
+            Assertions.assertEquals(response.getStatus(), 200);
+        }
+    }
 }
