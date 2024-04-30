@@ -18,7 +18,7 @@ Add dependency to pom.xml
 <dependency>
     <groupId>ir.moke</groupId>
     <artifactId>jpodman</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
