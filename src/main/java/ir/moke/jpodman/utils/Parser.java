@@ -9,15 +9,6 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-    @SuppressWarnings("unchecked")
-    public static Object parseIterableJson(Method method, String body) {
-        ParameterizedType parameterizedType = ReflectionUtils.getMethodGenericReturnType(method);
-        Class<? extends Collection<?>> collectionType = (Class<? extends Collection<?>>) parameterizedType.getRawType();
-        Class<?> genericType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-        return JsonUtils.toObject(body, collectionType, genericType);
-    }
-
-    @SuppressWarnings("unchecked")
     public static Object parseStringResponse(Method method, Class<?> returnType, String body) {
         if (String.class.isAssignableFrom(returnType)) {
             return String.valueOf(body);
@@ -27,31 +18,23 @@ public class Parser {
             return Boolean.parseBoolean(body);
         } else if (Iterable.class.isAssignableFrom(returnType)) {
             return parseIterableJson(method, body);
+        } else if (Map.class.isAssignableFrom(returnType)) {
+            return JsonUtils.toMap(body);
         } else {
-            // this block usable for pojo objects
+            return JsonUtils.toObject(body, returnType);
+        }
+    }
 
-            // 1) Generic types
-            if (ReflectionUtils.isGenericType(method)) {
-                ParameterizedType parameterizedType = ReflectionUtils.getMethodGenericReturnType(method);
-                Class<? extends Collection<?>> rawType = (Class<? extends Collection<?>>) ReflectionUtils.getRawOfGeneric(parameterizedType);
-
-                // a) if generic is type of Iterable
-                if (Iterable.class.isAssignableFrom(rawType)) {
-                    Class<?> gt = (Class<?>) ((ParameterizedType) parameterizedType.getActualTypeArguments()[0]).getActualTypeArguments()[0];
-                    return JsonUtils.toObject(body, rawType, gt);
-
-                    // b) if generic is type of Iterable
-                } else if (Map.class.isAssignableFrom(rawType)) {
-
-                    throw new RuntimeException("Not implemented yet (Map)");
-                } else {
-                    throw new RuntimeException("Not implemented yet (Unknown)");
-                }
-
-                // 2) pojo types
-            } else {
-                return JsonUtils.toObject(body, returnType);
-            }
+    @SuppressWarnings("unchecked")
+    public static Object parseIterableJson(Method method, String body) {
+        ParameterizedType parameterizedType = ReflectionUtils.getMethodGenericReturnType(method);
+        Class<? extends Collection<?>> collectionType = (Class<? extends Collection<?>>) parameterizedType.getRawType();
+        if (ReflectionUtils.isGenericType(parameterizedType.getActualTypeArguments()[0])) {
+            Class<?> rawOfGeneric = ReflectionUtils.getRawOfGeneric(parameterizedType);
+            return JsonUtils.toObject(body, collectionType, rawOfGeneric);
+        } else {
+            Class<?> genericType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            return JsonUtils.toObject(body, collectionType, genericType);
         }
     }
 

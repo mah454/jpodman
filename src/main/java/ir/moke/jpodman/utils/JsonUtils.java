@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JsonUtils {
@@ -59,6 +60,17 @@ public class JsonUtils {
         }
     }
 
+    public static <T> List<Object> toList(String str) {
+        try {
+            TypeReference<List<Object>> typeRef = new TypeReference<>() {
+            };
+            return objectMapper.readValue(str, typeRef);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<?> genericType) {
         try {
             CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
@@ -77,9 +89,9 @@ public class JsonUtils {
         }
     }
 
-    public static HashMap<String, Object> toMap(String str) {
+    public static <T> Map<String, T> toMap(String str) {
         try {
-            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+            TypeReference<HashMap<String, T>> typeRef = new TypeReference<>() {
             };
             return objectMapper.readValue(str, typeRef);
         } catch (IOException e) {

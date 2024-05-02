@@ -2,6 +2,8 @@ package ir.moke.jpodman.utils;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 public class ReflectionUtils {
 
@@ -41,6 +43,10 @@ public class ReflectionUtils {
         return (Class<?>) ((ParameterizedType) parameterizedType.getActualTypeArguments()[0]).getRawType();
     }
 
+    public static ParameterizedType getGenericIndexType(ParameterizedType types, int index) {
+        return (ParameterizedType) types.getActualTypeArguments()[index];
+    }
+
     public static boolean isGenericType(Method method) {
         Type returnType = method.getGenericReturnType();
         return isGenericType(returnType);
@@ -50,5 +56,14 @@ public class ReflectionUtils {
         return type instanceof ParameterizedType ||
                 type instanceof TypeVariable ||
                 type instanceof GenericArrayType;
+    }
+
+    public static boolean isCollection(ParameterizedType actualTypeArgument) {
+        return Collection.class.isAssignableFrom((Class<?>) actualTypeArgument.getRawType());
+    }
+
+    public static boolean isMap(ParameterizedType parameterizedType) {
+//        return Map.class.isAssignableFrom((Class<?>) ((ParameterizedType) actualTypeArgument.getActualTypeArguments()[0]).getRawType());
+        return Map.class.isAssignableFrom((Class<?>) parameterizedType.getRawType());
     }
 }
