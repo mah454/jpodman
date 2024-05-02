@@ -6,17 +6,18 @@ import ir.moke.jpodman.pojo.SearchImage;
 
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface PodmanImageService {
 
     @POST("images/pull")
     HttpResponse<String> imagePull(@QueryParameter("reference") String reference);
 
-    @GET("images/json")
-    List<Image> imageList(@QueryParameter("all") boolean all);
+    @POST("images/pull")
+    CompletableFuture<String> imagePullAsync(@QueryParameter("reference") String reference);
 
     @GET("images/json")
-    HttpResponse<List<Image>> imageListTest(@QueryParameter("all") boolean all);
+    List<Image> imageList(@QueryParameter("all") boolean all);
 
     @GET("images/search")
     List<SearchImage> imageSearch(@QueryParameter("term") String term);

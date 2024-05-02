@@ -1,26 +1,24 @@
 package ir.moke.jpodman.http;
 
 import ir.moke.jpodman.annotation.*;
-import ir.moke.jpodman.utils.ClassUtils;
 import ir.moke.jpodman.utils.JsonUtils;
+import ir.moke.jpodman.utils.Parser;
+import ir.moke.jpodman.utils.ReflectionUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.Future;
 
 class KafirProxy implements InvocationHandler {
-    private String baseUri;
+    private final String baseUri;
     private final HttpClient client;
 
     public KafirProxy(Kafir.KafirBuilder builder) {
@@ -40,7 +38,7 @@ class KafirProxy implements InvocationHandler {
         Map<String, String> queryParameters = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
         String apiPath = "";
-        Class<?> returnType = ClassUtils.getReturnTypeClass(method);
+        Class<?> returnType = ReflectionUtils.getReturnTypeClass(method);
         HttpMethod methodType = HttpMethod.GET;
         if (method.isAnnotationPresent(GET.class)) {
             apiPath = method.getDeclaredAnnotation(GET.class).value();
@@ -74,7 +72,7 @@ class KafirProxy implements InvocationHandler {
         if (queryParameters.isEmpty() && pathParameters.isEmpty()) {
             formatedUri = baseUri + apiPath;
         } else {
-            formatedUri = parsePathParameters(baseUri + apiPath, pathParameters) + "?" + mapToQueryParameter(queryParameters);
+            formatedUri = Parser.parsePathParameters(baseUri + apiPath, pathParameters) + "?" + Parser.parseQueryParameter(queryParameters);
         }
 
         URI uri = URI.create(formatedUri);
@@ -87,31 +85,16 @@ class KafirProxy implements InvocationHandler {
         };
 
         HttpRequest request = requestBuilder.build();
-
-        if (returnType.isAssignableFrom(HttpResponse.class)) {
+        if (Future.class.isAssignableFrom(returnType)) {
+            return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                    .thenApply(item -> Parser.parseStringResponse(method, returnType, item.body()));
+        } else if (HttpResponse.class.isAssignableFrom(returnType)) {
             return client.send(request, new JsonBodyHandler<>(method));
         } else {
             HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
             String body = httpResponse.body();
-            if (String.class.isAssignableFrom(returnType)) {
-                return String.valueOf(body);
-            } else if (Void.class.isAssignableFrom(returnType)) {
-                return Void.class;
-            } else if (Boolean.class.isAssignableFrom(returnType) || boolean.class.isAssignableFrom(returnType)) {
-                return Boolean.parseBoolean(body);
-            } else if (Iterable.class.isAssignableFrom(returnType)) {
-                return parseIterableJson(method, body);
-            } else {
-                return JsonUtils.toObject(body, returnType);
-            }
+            return Parser.parseStringResponse(method, returnType, body);
         }
-    }
-
-    private static Object parseIterableJson(Method method, String body) {
-        ParameterizedType parameterizedType = ClassUtils.getMethodGenericReturnType(method);
-        Class<? extends Collection<?>> collectionType = (Class<? extends Collection<?>>) parameterizedType.getRawType();
-        Class<?> genericType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-        return JsonUtils.toObject(body, collectionType, genericType);
     }
 
     private static HttpRequest.BodyPublisher initializeBodyPublisher(Method method, Object[] args) {
@@ -126,32 +109,6 @@ class KafirProxy implements InvocationHandler {
                 return args[i];
             }
         }
-
         return null;
-    }
-
-    private String mapToQueryParameter(Map<String, String> map) {
-        StringBuilder sb = new StringBuilder();
-        map.forEach((k, v) -> {
-            sb.append(k).append("=").append(v).append("&");
-        });
-        if (sb.isEmpty()) return "";
-        return sb.substring(0, sb.length() - 1);
-    }
-
-    private String parsePathParameters(String apiPath, Map<String, String> parameters) {
-        final Pattern pattern = Pattern.compile("\\{.*?\\}");
-        Matcher matcher = pattern.matcher(apiPath);
-
-        StringBuilder sb = new StringBuilder();
-
-        while (matcher.find()) {
-            String str = matcher.group();
-            String replacement = parameters.get(str.replace("{", "").replace("}", ""));
-            matcher.appendReplacement(sb, replacement);
-        }
-
-        matcher.appendTail(sb);
-        return sb.toString();
     }
 }

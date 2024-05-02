@@ -1,6 +1,6 @@
 package ir.moke.jpodman.http;
 
-import ir.moke.jpodman.utils.ClassUtils;
+import ir.moke.jpodman.utils.ReflectionUtils;
 import ir.moke.jpodman.utils.JsonUtils;
 
 import java.lang.reflect.Method;
@@ -46,14 +46,14 @@ public class JsonBodyHandler<T> implements HttpResponse.BodyHandler<T> {
     @SuppressWarnings("unchecked")
     private void detectReturnType(Method method) {
         try {
-            ParameterizedType genericReturnType = ClassUtils.getMethodGenericReturnType(method);
-            if (ClassUtils.isGenericType(genericReturnType.getActualTypeArguments()[0])) {
+            ParameterizedType genericReturnType = ReflectionUtils.getMethodGenericReturnType(method);
+            if (ReflectionUtils.isGenericType(genericReturnType.getActualTypeArguments()[0])) {
                 ParameterizedType actualTypeArgument = (ParameterizedType) genericReturnType.getActualTypeArguments()[0];
                 if (isCollection(actualTypeArgument)) {
                     collectionType = (Class<? extends Collection<T>>) actualTypeArgument.getRawType();
                     Type collectionGenericType = actualTypeArgument.getActualTypeArguments()[0];
 
-                    if (ClassUtils.isGenericType(collectionGenericType)) {
+                    if (ReflectionUtils.isGenericType(collectionGenericType)) {
                         /*
                          * Json key always is string
                          * */

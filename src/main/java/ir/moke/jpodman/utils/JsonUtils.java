@@ -59,7 +59,7 @@ public class JsonUtils {
         }
     }
 
-    public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<T> genericType) {
+    public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<?> genericType) {
         try {
             CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
             return objectMapper.readValue(str, listType);

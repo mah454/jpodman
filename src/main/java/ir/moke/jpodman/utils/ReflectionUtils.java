@@ -3,7 +3,7 @@ package ir.moke.jpodman.utils;
 import java.lang.reflect.*;
 import java.util.Arrays;
 
-public class ClassUtils {
+public class ReflectionUtils {
 
     public static Type getReturnType(Method method) {
         try {
@@ -35,6 +35,10 @@ public class ClassUtils {
 
     public static ParameterizedType getMethodGenericReturnType(Method method) {
         return (ParameterizedType) method.getGenericReturnType();
+    }
+
+    public static Class<?> getRawOfGeneric(ParameterizedType parameterizedType) {
+        return (Class<?>) ((ParameterizedType) parameterizedType.getActualTypeArguments()[0]).getRawType();
     }
 
     public static boolean isGenericType(Method method) {

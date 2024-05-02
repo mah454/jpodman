@@ -60,4 +60,10 @@ public class ImageTest {
         HttpResponse<String> response = podmanImageService.imagePrune();
         Assertions.assertEquals(response.statusCode(), 200);
     }
+
+    private static void checkAsync(List<Image> images) {
+        for (Image image : images) {
+            System.out.println(image);
+        }
+    }
 }
