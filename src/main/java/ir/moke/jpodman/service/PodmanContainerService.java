@@ -1,46 +1,36 @@
 package ir.moke.jpodman.service;
 
+import ir.moke.jpodman.annotation.*;
 import ir.moke.jpodman.pojo.Container;
 import ir.moke.jpodman.pojo.ContainerInfo;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
-@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 public interface PodmanContainerService {
 
-    @GET
-    @Path("containers/{name}/exists")
-    Response containerExists(@PathParam("name") String name);
+    @GET("containers/{name}/exists")
+    HttpResponse<Void> containerExists(@PathParameter("name") String name);
 
-    @GET
-    @Path("containers/{name}/healthcheck")
-    Response containerHealthCheck(@PathParam("name") String name);
+    @GET("containers/{name}/healthcheck")
+    HttpResponse<String> containerHealthCheck(@PathParameter("name") String name);
 
-    @DELETE
-    @Path("containers/{name}")
-    Response containerDelete(@PathParam("name") String name,
-                             @QueryParam("force") @DefaultValue("false") boolean force,
-                             @QueryParam("v") @DefaultValue("false") boolean deleteVolumes);
+    @DELETE("containers/{name}")
+    HttpResponse<Void> containerDelete(@PathParameter("name") String name,
+                                       @QueryParameter("force") boolean force,
+                                       @QueryParameter("v") boolean deleteVolumes);
 
-    @GET
-    @Path("containers/{name}/json")
-    Response containerInspect(@PathParam("name") String name);
+    @GET("containers/{name}/json")
+    String containerInspect(@PathParameter("name") String name);
 
-    @POST
-    @Path("containers/{name}/kill")
-    Response containerKill(@PathParam("name") String name);
+    @POST("containers/{name}/kill")
+    HttpResponse<Void> containerKill(@PathParameter("name") String name);
 
-    @POST
-    @Path("containers/{name}/pause")
-    Response containerPause(@PathParam("name") String name);
+    @POST("containers/{name}/pause")
+    HttpResponse<Void> containerPause(@PathParameter("name") String name);
 
-    @POST
-    @Path("containers/{name}/unpause")
-    Response containerUnpause(@PathParam("name") String name);
+    @POST("containers/{name}/unpause")
+    HttpResponse<Void> containerUnpause(@PathParameter("name") String name);
 
 
     /**
@@ -52,54 +42,44 @@ public interface PodmanContainerService {
      * @param tail       Only return this number of log lines from the end of the logs
      * @param since      Only return logs since this time, as a UNIX timestamp
      * @param until      Only return logs before this time, as a UNIX timestamp
-     * @return {@link Response}
+     * @return {@link HttpResponse}
      */
-    @GET
-    @Path("containers/{name}/logs")
-    Response containerLogs(@PathParam("name") String name,
-                           @QueryParam("flow") Boolean flow,
-                           @QueryParam("stdout") Boolean stdout,
-                           @QueryParam("stderr") Boolean stderr,
-                           @QueryParam("timestamps") boolean timestamps,
-                           @QueryParam("tail") String tail,
-                           @QueryParam("since") String since,
-                           @QueryParam("until") String until);
+    @GET("containers/{name}/logs")
+    HttpResponse<String> containerLogs(@PathParameter("name") String name,
+                                       @QueryParameter("flow") Boolean flow,
+                                       @QueryParameter("stdout") Boolean stdout,
+                                       @QueryParameter("stderr") Boolean stderr,
+                                       @QueryParameter("timestamps") boolean timestamps,
+                                       @QueryParameter("tail") String tail,
+                                       @QueryParameter("since") String since,
+                                       @QueryParameter("until") String until);
 
-    @POST
-    @Path("containers/{name}/rename")
-    Response containerRename(@PathParam("name") String name);
+    @POST("containers/{name}/rename")
+    void containerRename(@PathParameter("name") String name, @QueryParameter("name") String newName);
 
-    @POST
-    @Path("containers/{name}/restart")
-    Response containerRestart(@PathParam("name") String name);
+    @POST("containers/{name}/restart")
+    void containerRestart(@PathParameter("name") String name);
 
-    @POST
-    @Path("containers/{name}/start")
-    Response containerStart(@PathParam("name") String name);
+    @POST("containers/{name}/start")
+    HttpResponse<Void> containerStart(@PathParameter("name") String name);
 
-    @GET
-    @Path("containers/{name}/stats")
-    Response containerStats(@PathParam("name") String name);
+    @GET("containers/{name}/stats")
+    HttpResponse<String> containerStats(@PathParameter("name") String name);
 
-    @POST
-    @Path("containers/{name}/stop")
-    Response containerStop(@PathParam("name") String name, @PathParam("t") Integer waitTime);
+    @POST("containers/{name}/stop")
+    HttpResponse<Void> containerStop(@PathParameter("name") String name, @PathParameter("t") Integer waitTime);
 
-    @GET
-    @Path("containers/{name}/top")
-    Response containerListProcesses(@PathParam("name") String name);
+    @GET("containers/{name}/top")
+    HttpResponse<String> containerListProcesses(@PathParameter("name") String name);
 
 
-    @POST
-    @Path("containers/create")
-    Response containerCreate(Container container);
+    @POST("containers/create")
+    HttpResponse<String> containerCreate(Container container);
 
-    @GET
-    @Path("containers/json")
-    List<ContainerInfo> containerList(@QueryParam("all") Boolean all, @QueryParam("pod") Boolean pod);
+    @GET("containers/json")
+    List<ContainerInfo> containerList(@QueryParameter("all") Boolean all, @QueryParameter("pod") Boolean pod);
 
-    @POST
-    @Path("containers/prune")
-    Response containerPrune();
+    @POST("containers/prune")
+    void containerPrune();
 
 }

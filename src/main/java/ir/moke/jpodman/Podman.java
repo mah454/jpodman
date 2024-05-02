@@ -1,19 +1,11 @@
 package ir.moke.jpodman;
 
-import ir.moke.jpodman.utils.JsonUtils;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.proxy.WebResourceFactory;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.glassfish.jersey.media.sse.SseFeature;
+import ir.moke.jpodman.http.Kafir;
 
-import java.io.Closeable;
+import java.net.http.HttpClient;
 
-public class Podman implements Closeable {
+public class Podman {
     private static final String baseURL = "http://%s:%s/v5/libpod/";
-    private static final Client client;
 
     private final String host;
     private final int port;
@@ -23,24 +15,10 @@ public class Podman implements Closeable {
         this.port = port;
     }
 
-    static {
-        JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
-        provider.setMapper(JsonUtils.getObjectMapper());
-
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.register(JacksonFeature.class);
-        clientConfig.register(SseFeature.class);
-        clientConfig.register(provider);
-
-        client = ClientBuilder.newClient(clientConfig);
-    }
-
     public <T> T api(Class<T> clazz) {
-        return WebResourceFactory.newResource(clazz, client.target(baseURL.formatted(host, port)));
-    }
-
-    @Override
-    public void close() {
-        client.close();
+        return new Kafir.KafirBuilder()
+                .setBaseUri(baseURL.formatted(host, port))
+                .setVersion(HttpClient.Version.HTTP_2)
+                .build(clazz);
     }
 }

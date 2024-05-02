@@ -6,10 +6,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.MapType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class JsonUtils {
 
@@ -50,6 +54,24 @@ public class JsonUtils {
     public static <T> T toObject(File file, Class<T> clazz) {
         try {
             return objectMapper.readValue(file, clazz);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T toObject(String str, Class<? extends Collection<?>> collectionType, Class<T> genericType) {
+        try {
+            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(collectionType, genericType);
+            return objectMapper.readValue(str, listType);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> HashMap<String, T> toMap(String str, Class<? extends Map<String, T>> mapClassType, Class<T> genericType) {
+        try {
+            MapType mapType = objectMapper.getTypeFactory().constructMapType(mapClassType, String.class, genericType);
+            return objectMapper.readValue(str, mapType);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

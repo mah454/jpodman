@@ -4,9 +4,10 @@ import ir.moke.jpodman.pojo.*;
 import ir.moke.jpodman.service.PodmanContainerService;
 import ir.moke.jpodman.service.PodmanImageService;
 import ir.moke.jpodman.service.PodmanVolumeService;
-import jakarta.ws.rs.core.Response;
+import ir.moke.jpodman.utils.JsonUtils;
 import org.junit.jupiter.api.*;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -14,8 +15,8 @@ import java.util.stream.Stream;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContainerTest {
     private static final String IMAGE_NAME = "registry.docker.ir/postgres";
-    private static final Podman podman = new Podman("127.0.0.1",9000);
-    private static final PodmanSSE podmanSSE = new PodmanSSE("127.0.0.1",9000);
+    private static final Podman podman = new Podman("127.0.0.1", 9000);
+    private static final PodmanSSE podmanSSE = new PodmanSSE("127.0.0.1", 9000);
     private static final PodmanContainerService podmanContainerService = podman.api(PodmanContainerService.class);
     private static final PodmanVolumeService podmanVolumeService = podman.api(PodmanVolumeService.class);
     private static final PodmanImageService podmanImageService = podman.api(PodmanImageService.class);
@@ -34,14 +35,14 @@ public class ContainerTest {
                 .map(Volume::getName)
                 .ifPresent(ContainerTest::removeTestVolume);
 
-        try (Response response = podmanImageService.imageExists(IMAGE_NAME)) {
-            if (response.getStatus() != 204) {
-                try (Response pullResponse = podmanImageService.imagePull(IMAGE_NAME)) {
-                    Assertions.assertEquals(pullResponse.getStatus(), 200);
-                    System.out.println(pullResponse.readEntity(String.class));
-                }
-            }
+        HttpResponse<String> response = podmanImageService.imageExists(IMAGE_NAME);
+
+        if (response.statusCode() != 204) {
+            HttpResponse<String> pullResponse = podmanImageService.imagePull(IMAGE_NAME);
+            Assertions.assertEquals(pullResponse.statusCode(), 200);
+            System.out.println(pullResponse.body());
         }
+
 
         Container container = new Container();
         container.setName("test");
@@ -59,12 +60,10 @@ public class ContainerTest {
 //        container.setUseHostEnvironments(true);
 //        container.setEntrypoint(List.of("/bin/sh"));
 
-        Response response = podmanContainerService.containerCreate(container);
-        System.out.println(response.getStatus());
-        System.out.println(response.readEntity(String.class));
-        response.close();
-
-        Assertions.assertEquals(201, response.getStatus());
+        HttpResponse<String> containerCreateResponse = podmanContainerService.containerCreate(container);
+        System.out.println(containerCreateResponse.statusCode());
+        System.out.println(containerCreateResponse.body());
+        Assertions.assertEquals(201, containerCreateResponse.statusCode());
     }
 
     @Test
@@ -78,15 +77,16 @@ public class ContainerTest {
     @Order(2)
     public void containerList() {
         List<ContainerInfo> containerInfoList = podmanContainerService.containerList(true, null);
+        System.out.println(JsonUtils.toJson(containerInfoList.getFirst()));
         Assertions.assertFalse(containerInfoList.isEmpty());
     }
 
     @Test
     @Order(3)
     public void containerStart() {
-        try (Response response = podmanContainerService.containerStart("test")) {
-            Assertions.assertEquals(response.getStatus(), 204);
-        }
+        HttpResponse<Void> httpResponse = podmanContainerService.containerStart("test");
+        Assertions.assertEquals(httpResponse.statusCode(), 204);
+
     }
 
     @Test
@@ -106,28 +106,23 @@ public class ContainerTest {
     @Test
     @Order(6)
     public void containerStop() {
-        try (Response response = podmanContainerService.containerStop("test", 3)) {
-            Assertions.assertEquals(response.getStatus(), 204);
-        }
+        HttpResponse<Void> httpResponse = podmanContainerService.containerStop("test", 3);
+        Assertions.assertEquals(httpResponse.statusCode(), 204);
     }
 
     @Test
     @Order(7)
     public void containerDelete() {
-        try (Response response = podmanContainerService.containerDelete("test", true, true)) {
-            Assertions.assertEquals(response.getStatus(), 200);
-        }
+        HttpResponse<Void> httpResponse = podmanContainerService.containerDelete("test", true, true);
+        Assertions.assertEquals(httpResponse.statusCode(), 200);
     }
 
     private static void removeTestVolume(String name) {
-        Response response = podmanVolumeService.volumeRemove(name);
-        response.close();
+        HttpResponse<Void> httpResponse = podmanVolumeService.volumeRemove(name, false);
     }
 
     private static boolean checkContainerExists() {
-        try (Response response = podmanContainerService.containerExists("test")) {
-            int status = response.getStatus();
-            return status == 204;
-        }
+        HttpResponse<Void> httpResponse = podmanContainerService.containerExists("test");
+        return httpResponse.statusCode() == 204;
     }
 }

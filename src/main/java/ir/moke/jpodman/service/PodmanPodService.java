@@ -1,79 +1,60 @@
 package ir.moke.jpodman.service;
 
+import ir.moke.jpodman.annotation.*;
 import ir.moke.jpodman.pojo.Pod;
 import ir.moke.jpodman.pojo.PodInfo;
 import ir.moke.jpodman.pojo.PodStats;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
-@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 public interface PodmanPodService {
 
-    @GET
-    @Path("generate/kube")
-    Response generateKube();
+    @GET("generate/kube")
+    HttpResponse<String> generateKube();
 
-    @POST
-    @Path("play/kube")
-    Response playKube(@QueryParam("network") String network, @QueryParam("start") Boolean start);
+    @POST("play/kube")
+    HttpResponse<String> playKube(@QueryParameter("network") String network, @QueryParameter("start") Boolean start);
 
-    @DELETE
-    @Path("pods/{name}")
-    Response podRemove(@PathParam("name") String name, @QueryParam("force") Boolean force);
+    @DELETE("pods/{name}")
+    HttpResponse<Void> podRemove(@PathParameter("name") String name, @QueryParameter("force") Boolean force);
 
-    @GET
-    @Path("pods/{name}/exists")
-    Response podExists(@PathParam("name") String name);
+    @GET("pods/{name}/exists")
+    HttpResponse<Void> podExists(@PathParameter("name") String name);
 
-    @GET
-    @Path("pods/{name}/json")
-    Response podInspect(@PathParam("name") String name);
+    @GET("pods/{name}/json")
+    String podInspect(@PathParameter("name") String name);
 
-    @POST
-    @Path("pods/{name}/kill")
-    Response podKill(@PathParam("name") String name);
+    @POST("pods/{name}/kill")
+    HttpResponse<Void> podKill(@PathParameter("name") String name);
 
-    @POST
-    @Path("pods/{name}/pause")
-    Response podPause(@PathParam("name") String name);
+    @POST("pods/{name}/pause")
+    HttpResponse<Void> podPause(@PathParameter("name") String name);
 
-    @POST
-    @Path("pods/{name}/unpause")
-    Response podUnpause(@PathParam("name") String name);
+    @POST("pods/{name}/unpause")
+    HttpResponse<Void> podUnpause(@PathParameter("name") String name);
 
-    @POST
-    @Path("pods/{name}/restart")
-    Response podRestart(@PathParam("name") String name);
+    @POST("pods/{name}/restart")
+    HttpResponse<Void> podRestart(@PathParameter("name") String name);
 
-    @POST
-    @Path("pods/{name}/start")
-    Response podStart(@PathParam("name") String name);
+    @POST("pods/{name}/start")
+    HttpResponse<Void> podStart(@PathParameter("name") String name);
 
-    @POST
-    @Path("pods/{name}/stop")
-    Response podStop(@PathParam("name") String name);
+    @POST("pods/{name}/stop")
+    HttpResponse<Void> podStop(@PathParameter("name") String name);
 
-    @GET
-    @Path("pods/{name}/top")
-    Response podTop(@PathParam("name") String name, @PathParam("stream") Boolean stream);
+    @GET("pods/{name}/top")
+    HttpResponse<String> podTop(@PathParameter("name") String name, @PathParameter("stream") Boolean stream);
 
-    @GET
-    @Path("pods/json")
+    @GET("pods/json")
     List<PodInfo> podList();
 
-    @POST
-    @Path("pods/prune")
-    Response podPrune();
+    @POST("pods/prune")
+    HttpResponse<Void> podPrune();
 
-    @GET
-    @Path("pods/stats")
-    List<PodStats> podStats(@QueryParam("all") boolean all, @QueryParam("namesOrIDs") List<String> namesOrIDs);
+    @GET("pods/stats")
+    List<PodStats> podStats(@QueryParameter("all") boolean all, @QueryParameter("namesOrIDs") List<String> namesOrIDs);
 
-    @POST
-    @Path("pods/create")
-    Response podCreate(Pod pod);
+    @POST("pods/create")
+    HttpResponse<String> podCreate(Pod pod);
 }

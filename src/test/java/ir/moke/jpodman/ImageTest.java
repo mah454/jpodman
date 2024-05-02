@@ -3,9 +3,9 @@ package ir.moke.jpodman;
 import ir.moke.jpodman.pojo.Image;
 import ir.moke.jpodman.pojo.SearchImage;
 import ir.moke.jpodman.service.PodmanImageService;
-import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -18,33 +18,33 @@ public class ImageTest {
     @Test
     @Order(0)
     public void imagePull() {
-        try (Response response = podmanImageService.imagePull(IMAGE_REGISTRY + "busybox")) {
-            Assertions.assertEquals(response.getStatus(), 200);
-            System.out.println(response.readEntity(String.class));
-        }
+        HttpResponse<String> response = podmanImageService.imagePull(IMAGE_REGISTRY + "busybox");
+        Assertions.assertEquals(response.statusCode(), 200);
+        System.out.println(response.body());
     }
 
     @Test
     @Order(1)
     public void imageList() {
-        List<Image> imageList = podmanImageService.imageList(true);
-        System.out.println(imageList.size());
+        List<Image> images = podmanImageService.imageList(true);
+        Assertions.assertNotNull(images);
+        Assertions.assertFalse(images.isEmpty());
+        Assertions.assertDoesNotThrow(() -> images.getFirst().getNames());
     }
 
     @Test
     @Order(2)
     public void imageExists() {
-        try (Response response = podmanImageService.imageExists("busybox")) {
-            Assertions.assertEquals(response.getStatus(), 204);
-        }
+        HttpResponse<String> response = podmanImageService.imageExists("busybox");
+        Assertions.assertEquals(response.statusCode(), 204);
+        System.out.println(response);
     }
 
     @Test
     @Order(3)
     public void imageRemove() {
-        try (Response response = podmanImageService.imageRemove(List.of("busybox"), false, false)) {
-            Assertions.assertEquals(response.getStatus(), 200);
-        }
+        HttpResponse<String> response = podmanImageService.imageRemove(List.of("busybox"), false, false);
+        Assertions.assertEquals(response.statusCode(), 200);
     }
 
     @Test
@@ -57,8 +57,7 @@ public class ImageTest {
     @Test
     @Order(5)
     public void imagePrune() {
-        try (Response response = podmanImageService.imagePrune()) {
-            Assertions.assertEquals(response.getStatus(), 200);
-        }
+        HttpResponse<String> response = podmanImageService.imagePrune();
+        Assertions.assertEquals(response.statusCode(), 200);
     }
 }

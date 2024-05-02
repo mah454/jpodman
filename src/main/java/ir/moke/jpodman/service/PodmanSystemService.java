@@ -1,34 +1,25 @@
 package ir.moke.jpodman.service;
 
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import ir.moke.jpodman.annotation.GET;
+import ir.moke.jpodman.annotation.POST;
+import ir.moke.jpodman.annotation.QueryParameter;
 
-@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+import java.net.http.HttpResponse;
+
 public interface PodmanSystemService {
 
-    @GET
-    @Path("_ping")
-    Response ping() ;
+    @GET("_ping")
+    HttpResponse<Void> ping();
 
-    @GET
-    @Path("events")
-    Response events(@QueryParam("stream") @DefaultValue("true") boolean stream) ;
+    @GET("events")
+    HttpResponse<String> events(@QueryParameter("stream") boolean stream);
 
-    @GET
-    @Path("info")
-    Response info();
+    @GET("info")
+    String info();
 
-    @GET
-    @Path("system/df")
-    Response df();
+    @GET("system/df")
+    String df();
 
-    @POST
-    @Path("system/prune")
-    Response prune();
-
-
-
-
+    @POST("system/prune")
+    HttpResponse<Void> prune();
 }

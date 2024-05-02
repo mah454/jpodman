@@ -1,33 +1,25 @@
 package ir.moke.jpodman.service;
 
+import ir.moke.jpodman.annotation.*;
 import ir.moke.jpodman.pojo.Volume;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
-@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 public interface PodmanVolumeService {
 
-    @DELETE
-    @Path("volumes/{name}")
-    Response volumeRemove(@PathParam("name") String name);
+    @DELETE("volumes/{name}")
+    HttpResponse<Void> volumeRemove(@PathParameter("name") String name, @QueryParameter("force") boolean force);
 
-    @GET
-    @Path("volumes/{name}/json")
-    Response volumeInspect(@PathParam("name") String name);
+    @GET("volumes/{name}/json")
+    String volumeInspect(@PathParameter("name") String name);
 
-    @POST
-    @Path("volumes/create")
+    @POST("volumes/create")
     Volume volumeCreate(Volume volume);
 
-    @GET
-    @Path("volumes/json")
+    @GET("volumes/json")
     List<Volume> volumeList();
 
-    @POST
-    @Path("volumes/prune")
-    Response volumePrune();
+    @POST("volumes/prune")
+    HttpResponse<Void> volumePrune();
 }

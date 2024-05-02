@@ -2,15 +2,15 @@ package ir.moke.jpodman;
 
 import ir.moke.jpodman.pojo.Volume;
 import ir.moke.jpodman.service.PodmanVolumeService;
-import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VolumeTest {
 
-    private static final Podman podman = new Podman("127.0.0.1",9000);
+    private static final Podman podman = new Podman("127.0.0.1", 9000);
     private static final PodmanVolumeService podmanVolumeService = podman.api(PodmanVolumeService.class);
 
     @Test
@@ -20,6 +20,7 @@ public class VolumeTest {
         volume.setName("sample");
         volume = podmanVolumeService.volumeCreate(volume);
         Assertions.assertNotNull(volume.getCreatedAt());
+        System.out.println(volume.getMountPoint());
     }
 
     @Test
@@ -27,22 +28,22 @@ public class VolumeTest {
     public void volumeList() {
         List<Volume> volumes = podmanVolumeService.volumeList();
         Assertions.assertFalse(volumes.isEmpty());
+        for (Volume volume : volumes) {
+            System.out.println(volume.getMountPoint());
+        }
     }
 
     @Test
     @Order(2)
     public void volumeRemove() {
-        try (Response response = podmanVolumeService.volumeRemove("sample")) {
-            Assertions.assertEquals(204, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanVolumeService.volumeRemove("sample", false);
+        Assertions.assertEquals(204, httpResponse.statusCode());
     }
 
     @Test
     @Order(3)
     public void volumePrune() {
-        volumeCreate();
-        try (Response response = podmanVolumeService.volumePrune()) {
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanVolumeService.volumePrune();
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 }

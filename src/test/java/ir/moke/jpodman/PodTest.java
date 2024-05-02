@@ -6,9 +6,9 @@ import ir.moke.jpodman.pojo.PodInfo;
 import ir.moke.jpodman.pojo.PodStats;
 import ir.moke.jpodman.service.PodmanContainerService;
 import ir.moke.jpodman.service.PodmanPodService;
-import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.*;
 
+import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,70 +30,63 @@ public class PodTest {
         pod.setLabels(Map.of("a", "12", "b", "44"));
         pod.setStaticIp("172.16.112.21");
 
-        try (Response response = podmanPodService.podCreate(pod)) {
-            Assertions.assertEquals(response.getStatus(), 201);
-            System.out.println(response.readEntity(String.class));
-        }
+        HttpResponse<String> podCreateResponse = podmanPodService.podCreate(pod);
+        Assertions.assertEquals(podCreateResponse.statusCode(), 201);
+        System.out.println(podCreateResponse.body());
 
         Container container = new Container();
         container.setName("c1");
         container.setImage("postgres");
         container.setPod("sample");
-        try (Response containerResponse = podmanContainerService.containerCreate(container)) {
-            Assertions.assertEquals(201, containerResponse.getStatus());
-            System.out.println(containerResponse.readEntity(String.class));
-        }
+        HttpResponse<String> containerCreateResponse = podmanContainerService.containerCreate(container);
+        Assertions.assertEquals(201, containerCreateResponse.statusCode());
+        System.out.println(containerCreateResponse.body());
     }
 
 
     @Test
     @Order(1)
     public void podExists() {
-        try (Response response = podmanPodService.podExists("sample")) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(204, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podExists("sample");
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(204, httpResponse.statusCode());
     }
 
     @Test
     @Order(2)
     public void podStart() {
-        try (Response response = podmanPodService.podStart("sample")) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podStart("sample");
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 
     @Test
     @Order(3)
     public void podStop() {
-        try (Response response = podmanPodService.podStop("sample")) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podStop("sample");
+        System.out.println(httpResponse.body());
+        System.out.println(httpResponse.statusCode());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 
     @Test
     @Order(4)
     public void podPause() {
-        try (Response response = podmanPodService.podPause("sample")) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podPause("sample");
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 
     @Test
     @Order(5)
     public void podUnpause() {
-        try (Response response = podmanPodService.podUnpause("sample")) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podUnpause("sample");
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 
     @Test
@@ -107,11 +100,10 @@ public class PodTest {
     @Order(7)
     public void podKill() {
         podStart();
-        try (Response response = podmanPodService.podKill("sample")) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podKill("sample");
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 
     @Test
@@ -124,20 +116,18 @@ public class PodTest {
     @Test
     @Order(20)
     public void podRemove() {
-        try (Response response = podmanPodService.podRemove("sample", true)) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podRemove("sample", true);
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 
     @Test
     @Order(21)
     public void podPrune() {
-        try (Response response = podmanPodService.podPrune()) {
-            System.out.println(response.getStatus());
-            System.out.println(response.readEntity(String.class));
-            Assertions.assertEquals(200, response.getStatus());
-        }
+        HttpResponse<Void> httpResponse = podmanPodService.podPrune();
+        System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
     }
 }

@@ -1,49 +1,41 @@
 package ir.moke.jpodman.service;
 
+import ir.moke.jpodman.annotation.*;
 import ir.moke.jpodman.pojo.Image;
 import ir.moke.jpodman.pojo.SearchImage;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
-@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 public interface PodmanImageService {
 
-    @POST
-    @Path("images/pull")
-    Response imagePull(@QueryParam("reference") String reference);
+    @POST("images/pull")
+    HttpResponse<String> imagePull(@QueryParameter("reference") String reference);
 
-    @GET
-    @Path("images/json")
-    List<Image> imageList(@QueryParam("all") @DefaultValue("false") boolean all);
+    @GET("images/json")
+    List<Image> imageList(@QueryParameter("all") boolean all);
 
-    @GET
-    @Path("images/search")
-    List<SearchImage> imageSearch(@QueryParam("term") String term);
+    @GET("images/json")
+    HttpResponse<List<Image>> imageListTest(@QueryParameter("all") boolean all);
 
-    @DELETE
-    @Path("images/remove")
-    Response imageRemove(@QueryParam("images") List<String> images,
-                         @QueryParam("all") @DefaultValue("true") boolean all,
-                         @QueryParam("force") @DefaultValue("false") boolean force);
+    @GET("images/search")
+    List<SearchImage> imageSearch(@QueryParameter("term") String term);
 
-    @GET
-    @Path("images/{name}/json")
-    Response imageInspect(@PathParam("name") String name);
+    @DELETE("images/remove")
+    HttpResponse<String> imageRemove(@QueryParameter("images") List<String> images,
+                                     @QueryParameter("all") boolean all,
+                                     @QueryParameter("force") boolean force);
 
-    @GET
-    @Path("images/{name}/exists")
-    Response imageExists(@PathParam("name") String name);
+    @GET("images/{name}/json")
+    HttpResponse<String> imageInspect(@PathParameter("name") String name);
 
-    @POST
-    @Path("images/{name}/untag")
-    Response imageUntag(@PathParam("name") String name);
+    @GET("images/{name}/exists")
+    HttpResponse<String> imageExists(@PathParameter("name") String name);
+
+    @POST("images/{name}/untag")
+    HttpResponse<String> imageUntag(@PathParameter("name") String name);
 
 
-    @POST
-    @Path("images/prune")
-    Response imagePrune();
+    @POST("images/prune")
+    HttpResponse<String> imagePrune();
 }
