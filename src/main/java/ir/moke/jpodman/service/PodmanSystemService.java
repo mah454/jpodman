@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 public interface PodmanSystemService {
 
     @GET("_ping")
-    HttpResponse<Void> ping();
+    HttpResponse<String> ping();
 
     @GET("events")
     HttpResponse<String> events(@QueryParameter("stream") boolean stream);

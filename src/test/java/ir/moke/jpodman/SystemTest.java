@@ -16,8 +16,9 @@ public class SystemTest {
     @Test
     @Order(0)
     public void ping() {
-        HttpResponse<Void> httpResponse = podmanSystemService.ping();
+        HttpResponse<String> httpResponse = podmanSystemService.ping();
         System.out.println(httpResponse.statusCode());
+        System.out.println(httpResponse.body());
         Assertions.assertEquals(200, httpResponse.statusCode());
 
     }

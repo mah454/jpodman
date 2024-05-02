@@ -35,6 +35,7 @@ public class JsonBodyHandler<T> implements HttpResponse.BodyHandler<T> {
 
     private T getResult(String s) {
         if (s == null || s.isEmpty()) return null;
+        if (!JsonUtils.isJson(s)) return (T) s;
         if (collectionType != null) {
             return JsonUtils.toObject(s, collectionType, objectType);
         } else {

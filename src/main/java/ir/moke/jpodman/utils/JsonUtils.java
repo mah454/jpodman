@@ -95,6 +95,15 @@ public class JsonUtils {
         }
     }
 
+    public static boolean isJson(String str) {
+        try {
+            objectMapper.readTree(str);
+            return true;
+        } catch (JsonProcessingException e) {
+            return false;
+        }
+    }
+
     public static ObjectMapper getObjectMapper() {
         return objectMapper;
     }
