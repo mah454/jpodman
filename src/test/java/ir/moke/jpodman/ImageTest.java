@@ -35,27 +35,40 @@ public class ImageTest {
     @Test
     @Order(2)
     public void imageExists() {
-        HttpResponse<String> response = podmanImageService.imageExists("busybox");
+        HttpResponse<Void> response = podmanImageService.imageExists("busybox");
         Assertions.assertEquals(response.statusCode(), 204);
-        System.out.println(response);
     }
 
     @Test
     @Order(3)
-    public void imageRemove() {
-        HttpResponse<String> response = podmanImageService.imageRemove(List.of("busybox"), false, false);
-        Assertions.assertEquals(response.statusCode(), 200);
+    public void imageInspect() {
+        HttpResponse<Image> inspect = podmanImageService.imageInspect("busybox");
+        System.out.println(inspect.body().getId());
     }
 
     @Test
     @Order(4)
+    public void imageRemove() {
+        HttpResponse<Void> response = podmanImageService.imageRemove(List.of("busybox"), false, false);
+        Assertions.assertEquals(response.statusCode(), 200);
+    }
+
+    @Test
+    @Order(5)
+    public void checkExistsAfterRemove() {
+        HttpResponse<Void> response = podmanImageService.imageExists("busybox");
+        Assertions.assertEquals(response.statusCode(), 204);
+    }
+
+    @Test
+    @Order(6)
     public void imageSearch() {
         List<SearchImage> searchImageList = podmanImageService.imageSearch("mysql");
         Assertions.assertTrue(searchImageList.size() > 1);
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     public void imagePrune() {
         HttpResponse<String> response = podmanImageService.imagePrune();
         Assertions.assertEquals(response.statusCode(), 200);

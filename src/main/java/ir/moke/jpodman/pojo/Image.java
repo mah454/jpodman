@@ -29,10 +29,6 @@ public class Image {
     private List<String> names;
     @JsonProperty("Digest")
     private String digest;
-    @JsonProperty("History")
-    private List<String> history;
-    @JsonProperty("Created")
-    private Long created;
 
     public String getId() {
         return id;
@@ -120,22 +116,6 @@ public class Image {
 
     public void setDigest(String digest) {
         this.digest = digest;
-    }
-
-    public List<String> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<String> history) {
-        this.history = history;
-    }
-
-    public Long getCreated() {
-        return created;
-    }
-
-    public void setCreated(Long created) {
-        this.created = created;
     }
 
     @Override

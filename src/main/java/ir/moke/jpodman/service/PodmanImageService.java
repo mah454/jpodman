@@ -1,12 +1,11 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.kafir.annotation.*;
 import ir.moke.jpodman.pojo.Image;
 import ir.moke.jpodman.pojo.SearchImage;
+import ir.moke.kafir.annotation.*;
 
 import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public interface PodmanImageService {
@@ -24,15 +23,15 @@ public interface PodmanImageService {
     List<SearchImage> imageSearch(@QueryParameter("term") String term);
 
     @DELETE("images/remove")
-    HttpResponse<String> imageRemove(@QueryParameter("images") List<String> images,
+    HttpResponse<Void> imageRemove(@QueryParameter("images") List<String> images,
                                      @QueryParameter("all") boolean all,
                                      @QueryParameter("force") boolean force);
 
     @GET("images/{name}/json")
-    HttpResponse<String> imageInspect(@PathParameter("name") String name);
+    HttpResponse<Image> imageInspect(@PathParameter("name") String name);
 
     @GET("images/{name}/exists")
-    HttpResponse<String> imageExists(@PathParameter("name") String name);
+    HttpResponse<Void> imageExists(@PathParameter("name") String name);
 
     @POST("images/{name}/untag")
     HttpResponse<String> imageUntag(@PathParameter("name") String name);

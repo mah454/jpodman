@@ -4,7 +4,7 @@ import ir.moke.jpodman.pojo.*;
 import ir.moke.jpodman.service.PodmanContainerService;
 import ir.moke.jpodman.service.PodmanImageService;
 import ir.moke.jpodman.service.PodmanVolumeService;
-import ir.moke.jpodman.utils.JsonUtils;
+import ir.moke.kafir.utils.JsonUtils;
 import org.junit.jupiter.api.*;
 
 import java.net.http.HttpResponse;
@@ -35,7 +35,7 @@ public class ContainerTest {
                 .map(Volume::getName)
                 .ifPresent(ContainerTest::removeTestVolume);
 
-        HttpResponse<String> response = podmanImageService.imageExists(IMAGE_NAME);
+        HttpResponse<Void> response = podmanImageService.imageExists(IMAGE_NAME);
 
         if (response.statusCode() != 204) {
             HttpResponse<String> pullResponse = podmanImageService.imagePull(IMAGE_NAME);
@@ -119,6 +119,7 @@ public class ContainerTest {
 
     private static void removeTestVolume(String name) {
         HttpResponse<Void> httpResponse = podmanVolumeService.volumeRemove(name, false);
+        System.out.println(httpResponse.statusCode());
     }
 
     private static boolean checkContainerExists() {
