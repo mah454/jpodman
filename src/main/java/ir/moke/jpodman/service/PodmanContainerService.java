@@ -72,7 +72,6 @@ public interface PodmanContainerService {
     @GET("containers/{name}/top")
     HttpResponse<String> containerListProcesses(@PathParameter("name") String name);
 
-
     @POST("containers/create")
     HttpResponse<String> containerCreate(Container container);
 
