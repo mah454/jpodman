@@ -1,6 +1,6 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.jpodman.annotation.*;
+import ir.moke.kafir.annotation.*;
 import ir.moke.jpodman.pojo.Network;
 import ir.moke.jpodman.pojo.NetworkConnectContainer;
 import ir.moke.jpodman.pojo.NetworkDisconnectContainer;

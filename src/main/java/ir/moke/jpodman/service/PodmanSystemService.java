@@ -1,8 +1,8 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.jpodman.annotation.GET;
-import ir.moke.jpodman.annotation.POST;
-import ir.moke.jpodman.annotation.QueryParameter;
+import ir.moke.kafir.annotation.GET;
+import ir.moke.kafir.annotation.POST;
+import ir.moke.kafir.annotation.QueryParameter;
 
 import java.net.http.HttpResponse;
 

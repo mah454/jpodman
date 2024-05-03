@@ -1,6 +1,6 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.jpodman.annotation.*;
+import ir.moke.kafir.annotation.*;
 import ir.moke.jpodman.pojo.Pod;
 import ir.moke.jpodman.pojo.PodInfo;
 import ir.moke.jpodman.pojo.PodStats;
