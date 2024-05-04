@@ -33,6 +33,9 @@ public class NetworkTest {
     public void networkList() {
         List<NetworkInfo> networkInfoList = podmanNetworkService.networkList();
         Assertions.assertFalse(networkInfoList.isEmpty());
+        for (NetworkInfo networkInfo : networkInfoList) {
+            System.out.println(networkInfo.getNetworkInterface());
+        }
     }
 
     @Test

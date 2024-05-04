@@ -9,7 +9,8 @@ public class NetworkInfo {
     private String name;
     private String id;
     private String driver;
-    private String network_interface;
+    @JsonProperty("network_interface")
+    private String networkInterface;
     private String created;
     private List<Subnet> subnets;
     private Boolean internal;
@@ -30,8 +31,8 @@ public class NetworkInfo {
         return driver;
     }
 
-    public String getNetwork_interface() {
-        return network_interface;
+    public String getNetworkInterface() {
+        return networkInterface;
     }
 
     public String getCreated() {
