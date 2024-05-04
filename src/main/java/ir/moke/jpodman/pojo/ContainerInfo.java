@@ -10,8 +10,6 @@ public class ContainerInfo {
     private Boolean autoRemove;
     @JsonProperty("Command")
     private List<String> command;
-    @JsonProperty("postgres")
-    private String postgres;
     @JsonProperty("Created")
     private String created;
     @JsonProperty("CreatedAt")
@@ -65,10 +63,6 @@ public class ContainerInfo {
 
     public List<String> getCommand() {
         return command;
-    }
-
-    public String getPostgres() {
-        return postgres;
     }
 
     public String getCreated() {
