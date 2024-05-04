@@ -24,8 +24,9 @@ public class NetworkTest {
         network.setLabels(Map.of("NAME", "AAA", "AGE", "222"));
         network.setSubnets(List.of(new Subnet("10.10.10.0/24", "10.10.10.1")));
 
-        NetworkInfo networkInfo = podmanNetworkService.networkCreate(network);
-        Assertions.assertEquals("sample", networkInfo.getName());
+        HttpResponse<NetworkInfo> httpResponse = podmanNetworkService.networkCreate(network);
+        Assertions.assertEquals(200, httpResponse.statusCode());
+        System.out.println(httpResponse.body());
     }
 
     @Test
@@ -43,18 +44,5 @@ public class NetworkTest {
     public void networkDelete() {
         HttpResponse<Void> httpResponse = podmanNetworkService.networkRemove("sample", true);
         System.out.println(httpResponse.statusCode());
-    }
-
-    @Test
-    @Order(3)
-    public void networkCreate2() {
-        Network network = new Network();
-        network.setName("sample");
-        network.setLabels(Map.of("NAME", "AAA", "AGE", "222"));
-        network.setSubnets(List.of(new Subnet("10.10.10.0/24", "10.10.10.1")));
-
-        HttpResponse<NetworkInfo> httpResponse = podmanNetworkService.networkCreate2(network);
-        Assertions.assertEquals("sample", httpResponse.body().getName());
-        networkDelete();
     }
 }

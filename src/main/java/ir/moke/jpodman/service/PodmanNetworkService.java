@@ -24,10 +24,7 @@ public interface PodmanNetworkService {
     HttpResponse<String> networkInspect(@PathParameter("name") String name);
 
     @POST("networks/create")
-    NetworkInfo networkCreate(Network network);
-
-    @POST("networks/create")
-    HttpResponse<NetworkInfo> networkCreate2(Network network);
+    HttpResponse<NetworkInfo> networkCreate(Network network);
 
     @GET("networks/json")
     List<NetworkInfo> networkList();
