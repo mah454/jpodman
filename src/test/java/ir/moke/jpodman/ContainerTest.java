@@ -3,6 +3,7 @@ package ir.moke.jpodman;
 import ir.moke.jpodman.pojo.*;
 import ir.moke.jpodman.service.PodmanContainerService;
 import ir.moke.jpodman.service.PodmanImageService;
+import ir.moke.jpodman.service.PodmanNetworkService;
 import ir.moke.jpodman.service.PodmanVolumeService;
 import ir.moke.kafir.utils.JsonUtils;
 import org.junit.jupiter.api.*;
@@ -14,19 +15,18 @@ import java.util.stream.Stream;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContainerTest {
-    private static final String IMAGE_NAME = "registry.docker.ir/postgres";
+    private static final String IMAGE_NAME = "postgres:latest";
     private static final Podman podman = new Podman("127.0.0.1", 9000);
     private static final PodmanSSE podmanSSE = new PodmanSSE("127.0.0.1", 9000);
     private static final PodmanContainerService podmanContainerService = podman.api(PodmanContainerService.class);
     private static final PodmanVolumeService podmanVolumeService = podman.api(PodmanVolumeService.class);
     private static final PodmanImageService podmanImageService = podman.api(PodmanImageService.class);
+    private static final PodmanNetworkService podmanNetworkService = podman.api(PodmanNetworkService.class);
 
     @Test
     @Order(0)
     public void containerCreate() {
-        if (checkContainerExists()) {
-            containerDelete();
-        }
+        containerDelete();
         List<Volume> currentVolumes = podmanVolumeService.volumeList();
 
         currentVolumes.stream()
@@ -43,6 +43,7 @@ public class ContainerTest {
             System.out.println(pullResponse.body());
         }
 
+        Network network = createNetwork();
 
         Container container = new Container();
         container.setName("test");
@@ -55,6 +56,8 @@ public class ContainerTest {
         container.setExpose(Map.of(8080, Protocol.TCP, 9090, Protocol.UDP));
         container.setHosts(List.of("linux:10.10.11.11"));
         container.setPortMappings(List.of(new PortMapping(8080, 8081), new PortMapping(2121, 9091, Protocol.UDP)));
+        container.setNetworks(Map.of(network.getName(), new NetworkConnect("20.20.20.111")));
+        container.setNetns(Map.of("nsmode", network.getDriver().getType()));
 
 //        container.setStaticIp("172.16.10.10"); // need run as root
 //        container.setUseHostEnvironments(true);
@@ -64,6 +67,8 @@ public class ContainerTest {
         System.out.println(containerCreateResponse.statusCode());
         System.out.println(containerCreateResponse.body());
         Assertions.assertEquals(201, containerCreateResponse.statusCode());
+        deleteNetwork();
+        removeTestVolume("sample-volume");
     }
 
     @Test
@@ -113,8 +118,10 @@ public class ContainerTest {
     @Test
     @Order(7)
     public void containerDelete() {
-        HttpResponse<Void> httpResponse = podmanContainerService.containerDelete("test", true, true);
-        Assertions.assertEquals(httpResponse.statusCode(), 200);
+        if (checkContainerExists()) {
+            HttpResponse<Void> httpResponse = podmanContainerService.containerDelete("test", true, true);
+            Assertions.assertEquals(httpResponse.statusCode(), 200);
+        }
     }
 
     private static void removeTestVolume(String name) {
@@ -125,5 +132,30 @@ public class ContainerTest {
     private static boolean checkContainerExists() {
         HttpResponse<Void> httpResponse = podmanContainerService.containerExists("test");
         return httpResponse.statusCode() == 204;
+    }
+
+    public static void deleteNetwork() {
+        List<NetworkInfo> networkInfoList = podmanNetworkService.networkList();
+        Assertions.assertFalse(networkInfoList.isEmpty());
+        for (NetworkInfo networkInfo : networkInfoList) {
+            if (networkInfo.getName().equals("n1")) {
+                HttpResponse<Void> httpResponse = podmanNetworkService.networkRemove("n1", true);
+                Assertions.assertEquals(200, httpResponse.statusCode());
+            }
+        }
+    }
+
+    public static Network createNetwork() {
+        deleteNetwork();
+        Network network = new Network();
+        network.setDriver(NetworkDriver.BRIDGE);
+        network.setName("n1");
+        network.setGateway("20.20.20.1");
+        network.setSubnets(List.of(new Subnet("20.20.20.0/24", "20.20.20.1")));
+
+        HttpResponse<String> httpResponse = podmanNetworkService.networkCreate(network);
+        System.out.println(httpResponse.body());
+        Assertions.assertEquals(200, httpResponse.statusCode());
+        return network;
     }
 }

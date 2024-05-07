@@ -1,6 +1,7 @@
 package ir.moke.jpodman;
 
 import ir.moke.jpodman.pojo.Network;
+import ir.moke.jpodman.pojo.NetworkDriver;
 import ir.moke.jpodman.pojo.NetworkInfo;
 import ir.moke.jpodman.pojo.Subnet;
 import ir.moke.jpodman.service.PodmanNetworkService;
@@ -23,8 +24,10 @@ public class NetworkTest {
         network.setName("sample");
         network.setLabels(Map.of("NAME", "AAA", "AGE", "222"));
         network.setSubnets(List.of(new Subnet("10.10.10.0/24", "10.10.10.1")));
+        network.setDriver(NetworkDriver.BRIDGE);
 
-        HttpResponse<NetworkInfo> httpResponse = podmanNetworkService.networkCreate(network);
+        HttpResponse<String> httpResponse = podmanNetworkService.networkCreate(network);
+        System.out.println(httpResponse.body());
         Assertions.assertEquals(200, httpResponse.statusCode());
         System.out.println(httpResponse.body());
     }

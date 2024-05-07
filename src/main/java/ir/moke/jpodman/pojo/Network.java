@@ -1,6 +1,7 @@
 package ir.moke.jpodman.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class Network {
     @JsonProperty(namespace = "DisableDNS")
     private Boolean disableDNS;
     @JsonProperty(namespace = "Driver")
-    private String driver;
+    private NetworkDriver driver;
     @JsonProperty(namespace = "Gateway")
     private String gateway;
     @JsonProperty(namespace = "Internal")
@@ -41,11 +42,11 @@ public class Network {
         this.disableDNS = disableDNS;
     }
 
-    public String getDriver() {
+    public NetworkDriver getDriver() {
         return driver;
     }
 
-    public void setDriver(String driver) {
+    public void setDriver(NetworkDriver driver) {
         this.driver = driver;
     }
 

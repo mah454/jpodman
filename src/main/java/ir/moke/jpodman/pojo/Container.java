@@ -36,6 +36,10 @@ public class Container {
     private String staticIp;
     @JsonProperty("portmappings")
     private List<PortMapping> portMappings;
+    @JsonProperty("Networks")
+    private Map<String, NetworkConnect> networks;
+    @JsonProperty("netns")
+    private Map<String, String> netns;
 
     public String getName() {
         return name;
@@ -195,5 +199,21 @@ public class Container {
 
     public void setPortMappings(List<PortMapping> portMappings) {
         this.portMappings = portMappings;
+    }
+
+    public Map<String, NetworkConnect> getNetworks() {
+        return networks;
+    }
+
+    public void setNetworks(Map<String, NetworkConnect> networks) {
+        this.networks = networks;
+    }
+
+    public Map<String, String> getNetns() {
+        return netns;
+    }
+
+    public void setNetns(Map<String, String> netns) {
+        this.netns = netns;
     }
 }
