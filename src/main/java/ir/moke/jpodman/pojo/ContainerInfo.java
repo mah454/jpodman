@@ -29,7 +29,7 @@ public class ContainerInfo {
     @JsonProperty("IsInfra")
     private Boolean isInfra;
     @JsonProperty("Labels")
-    private List<String> labels;
+    private Map<String,String> labels;
     @JsonProperty("Mounts")
     private List<String> mounts;
     @JsonProperty("Names")
@@ -101,7 +101,7 @@ public class ContainerInfo {
         return isInfra;
     }
 
-    public List<String> getLabels() {
+    public Map<String, String> getLabels() {
         return labels;
     }
 
