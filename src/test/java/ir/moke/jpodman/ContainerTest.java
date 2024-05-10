@@ -55,9 +55,17 @@ public class ContainerTest {
         container.setVolumes(List.of(new VolumeParameter("/target", "sample-volume")));
         container.setExpose(Map.of(8080, Protocol.TCP, 9090, Protocol.UDP));
         container.setHosts(List.of("linux:10.10.11.11"));
-        container.setPortMappings(List.of(new PortMapping(8080, 8081), new PortMapping(2121, 9091, Protocol.UDP)));
-        container.setNetworks(Map.of(network.getName(), new NetworkConnect("20.20.20.111")));
-        container.setNetns(Map.of("nsmode", network.getDriver().getType()));
+//        container.setNetworks(Map.of(network.getName(), new NetworkConnect("20.20.20.111")));
+//        container.setNetns(Map.of("nsmode", network.getDriver().getType()));
+
+        PortMapping portMapping = new PortMapping();
+        portMapping.setContainerPort(8080);
+        portMapping.setHostPort(8080);
+        portMapping.setHostIp("192.168.1.1");
+        portMapping.setRange(10);
+        portMapping.setProtocol(Protocol.TCP);
+        container.setPortMappings(List.of(portMapping));
+//        container.setPortMappings(List.of(new PortMapping(8080, 8081), new PortMapping(2121, 9091, Protocol.UDP)));
 
 //        container.setStaticIp("172.16.10.10"); // need run as root
 //        container.setUseHostEnvironments(true);

@@ -14,7 +14,7 @@ public interface PodmanImageService {
     HttpResponse<String> imagePull(@QueryParameter("reference") String reference);
 
     @POST("images/pull")
-    CompletableFuture<String> imagePullAsync(@QueryParameter("reference") String reference);
+    CompletableFuture<HttpResponse<String>> imagePullAsync(@QueryParameter("reference") String reference);
 
     @GET("images/json")
     List<Image> imageList(@QueryParameter("all") boolean all);
@@ -24,8 +24,8 @@ public interface PodmanImageService {
 
     @DELETE("images/remove")
     HttpResponse<Void> imageRemove(@QueryParameter("images") List<String> images,
-                                     @QueryParameter("all") boolean all,
-                                     @QueryParameter("force") boolean force);
+                                   @QueryParameter("all") boolean all,
+                                   @QueryParameter("force") boolean force);
 
     @GET("images/{name}/json")
     HttpResponse<Image> imageInspect(@PathParameter("name") String name);

@@ -6,6 +6,7 @@ import ir.moke.kafir.annotation.*;
 
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface PodmanContainerService {
 
@@ -74,6 +75,9 @@ public interface PodmanContainerService {
 
     @POST("containers/create")
     HttpResponse<String> containerCreate(Container container);
+
+    @POST("containers/create")
+    CompletableFuture<HttpResponse<String>> containerCreateAsync(Container container);
 
     @GET("containers/json")
     List<ContainerInfo> containerList(@QueryParameter("all") Boolean all, @QueryParameter("pod") Boolean pod);
