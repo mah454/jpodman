@@ -58,13 +58,14 @@ public class ContainerTest {
 //        container.setNetworks(Map.of(network.getName(), new NetworkConnect("20.20.20.111")));
 //        container.setNetns(Map.of("nsmode", network.getDriver().getType()));
 
-        PortMapping portMapping = new PortMapping();
-        portMapping.setContainerPort(8080);
-        portMapping.setHostPort(8080);
-        portMapping.setHostIp("192.168.1.1");
-        portMapping.setRange(10);
-        portMapping.setProtocol(Protocol.TCP);
-        container.setPortMappings(List.of(portMapping));
+//        PortMapping portMapping = new PortMapping();
+//        portMapping.setContainerPort(8080);
+//        portMapping.setHostPort(8080);
+//        portMapping.setHostIp("192.168.1.1");
+//        portMapping.setRange(10);
+//        portMapping.setProtocol(Protocol.TCP);
+//        container.setPortMappings(List.of(portMapping));
+
 //        container.setPortMappings(List.of(new PortMapping(8080, 8081), new PortMapping(2121, 9091, Protocol.UDP)));
 
 //        container.setStaticIp("172.16.10.10"); // need run as root
@@ -97,7 +98,8 @@ public class ContainerTest {
     @Test
     @Order(3)
     public void containerStart() {
-        HttpResponse<Void> httpResponse = podmanContainerService.containerStart("test");
+        HttpResponse<String> httpResponse = podmanContainerService.containerStart("test");
+        System.out.println(httpResponse.body());
         Assertions.assertEquals(httpResponse.statusCode(), 204);
 
     }
@@ -119,7 +121,7 @@ public class ContainerTest {
     @Test
     @Order(6)
     public void containerStop() {
-        HttpResponse<Void> httpResponse = podmanContainerService.containerStop("test", 3);
+        HttpResponse<Void> httpResponse = podmanContainerService.containerStop("test", 10);
         Assertions.assertEquals(httpResponse.statusCode(), 204);
     }
 

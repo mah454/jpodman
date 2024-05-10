@@ -2,6 +2,7 @@ package ir.moke.jpodman.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class ContainerInfo {
     @JsonProperty("Mounts")
     private List<String> mounts;
     @JsonProperty("Names")
-    private List<String> names;
+    private List<String> names = new ArrayList<>();
     @JsonProperty("Namespaces")
     private Map<String, String> namespaces;
     @JsonProperty("Networks")
@@ -56,6 +57,21 @@ public class ContainerInfo {
     private String status;
     @JsonProperty("CIDFile")
     private String cidFile;
+
+    public ContainerInfo() {
+    }
+
+    public ContainerInfo(List<String> names) {
+        this.names = names;
+    }
+
+    public ContainerInfo(String name) {
+        this.names.add(name);
+    }
+
+    public void setNames(List<String> names) {
+        this.names = names;
+    }
 
     public Boolean getAutoRemove() {
         return autoRemove;

@@ -62,7 +62,7 @@ public interface PodmanContainerService {
     void containerRestart(@PathParameter("name") String name);
 
     @POST("containers/{name}/start")
-    HttpResponse<Void> containerStart(@PathParameter("name") String name);
+    HttpResponse<String> containerStart(@PathParameter("name") String name);
 
     @GET("containers/{name}/stats")
     HttpResponse<String> containerStats(@PathParameter("name") String name);
