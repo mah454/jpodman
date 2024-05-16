@@ -22,10 +22,11 @@ public interface PodmanImageService {
     @GET("images/search")
     List<SearchImage> imageSearch(@QueryParameter("term") String term);
 
+    @GET("images/search")
+    HttpResponse<String> imageSearch2(@QueryParameter("term") String term);
+
     @DELETE("images/remove")
-    HttpResponse<Void> imageRemove(@QueryParameter("images") List<String> images,
-                                   @QueryParameter("all") boolean all,
-                                   @QueryParameter("force") boolean force);
+    HttpResponse<Void> imageRemove(@QueryParameter("images") List<String> images, @QueryParameter("all") boolean all, @QueryParameter("force") boolean force);
 
     @GET("images/{name}/json")
     HttpResponse<Image> imageInspect(@PathParameter("name") String name);
