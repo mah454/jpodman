@@ -51,6 +51,18 @@ public class PodmanSSE implements Closeable {
         }
     }
 
+    public Stream<String> containerLogs(String name) {
+        URI targetURI = baseURI.resolve("containers/%s/logs".formatted(name));
+        try {
+            var request = HttpRequest.newBuilder(targetURI).GET().build();
+            return client.send(request, HttpResponse.BodyHandlers.ofLines()).body();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     @Override
     public void close() {
         client.close();
