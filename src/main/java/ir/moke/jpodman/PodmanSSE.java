@@ -51,8 +51,9 @@ public class PodmanSSE implements Closeable {
         }
     }
 
-    public Stream<String> containerLogs(String name) {
-        URI targetURI = baseURI.resolve("containers/%s/logs".formatted(name));
+    public Stream<String> containerLogs(String name, boolean stdOut, boolean stdErr, boolean timestamp, int tail, boolean follow) {
+        String url = "containers/%s/logs?stdout=%s&stderr=%s&timestamps=%s&tail=%s&follow=%s";
+        URI targetURI = baseURI.resolve(url.formatted(name, stdOut, stdErr, timestamp, tail, follow));
         try {
             var request = HttpRequest.newBuilder(targetURI).GET().build();
             return client.send(request, HttpResponse.BodyHandlers.ofLines()).body();
@@ -60,7 +61,6 @@ public class PodmanSSE implements Closeable {
             throw new RuntimeException(e);
         }
     }
-
 
 
     @Override
