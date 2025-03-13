@@ -104,6 +104,7 @@ public class PodmanSSE implements Closeable {
         if (executorService != null) {
             executorService.shutdown();
         }
+        client.shutdownNow();
         client.close();
     }
 }
