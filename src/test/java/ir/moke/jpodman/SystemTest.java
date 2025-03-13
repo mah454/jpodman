@@ -4,7 +4,6 @@ import ir.moke.jpodman.service.PodmanSystemService;
 import org.junit.jupiter.api.*;
 
 import java.net.http.HttpResponse;
-import java.util.stream.Stream;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SystemTest {
@@ -40,7 +39,6 @@ public class SystemTest {
     @Test
     @Order(2)
     public void event() {
-        Stream<String> stream = podmanSSE.systemEvents();
-        stream.forEach(System.out::println);
+        podmanSSE.systemEvents(4, Assertions::assertNotNull);
     }
 }

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.*;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ContainerTest {
@@ -39,7 +38,7 @@ public class ContainerTest {
 
         if (response.statusCode() != 204) {
             HttpResponse<String> pullResponse = podmanImageService.imagePull(IMAGE_NAME);
-            Assertions.assertEquals(pullResponse.statusCode(), 200);
+            Assertions.assertEquals(200, pullResponse.statusCode());
             System.out.println(pullResponse.body());
         }
 
@@ -100,29 +99,27 @@ public class ContainerTest {
     public void containerStart() {
         HttpResponse<String> httpResponse = podmanContainerService.containerStart("test");
         System.out.println(httpResponse.body());
-        Assertions.assertEquals(httpResponse.statusCode(), 204);
+        Assertions.assertEquals(204, httpResponse.statusCode());
 
     }
 
     @Test
     @Order(4)
     public void containerState() {
-        Stream<String> stream = podmanSSE.containerStats("test");
-        stream.limit(3).forEach(Assertions::assertNotNull);
+        podmanSSE.containerStats("test", 4, Assertions::assertNotNull);
     }
 
     @Test
     @Order(5)
     public void containerTop() {
-        Stream<String> stream = podmanSSE.containerTop("test");
-        stream.limit(3).forEach(Assertions::assertNotNull);
+        podmanSSE.containerTop("test", 4, Assertions::assertNotNull);
     }
 
     @Test
     @Order(6)
     public void containerStop() {
         HttpResponse<Void> httpResponse = podmanContainerService.containerStop("test", 10);
-        Assertions.assertEquals(httpResponse.statusCode(), 204);
+        Assertions.assertEquals(204, httpResponse.statusCode());
     }
 
     @Test
@@ -130,7 +127,7 @@ public class ContainerTest {
     public void containerDelete() {
         if (checkContainerExists()) {
             HttpResponse<Void> httpResponse = podmanContainerService.containerDelete("test", true, true);
-            Assertions.assertEquals(httpResponse.statusCode(), 200);
+            Assertions.assertEquals(200, httpResponse.statusCode());
         }
     }
 
