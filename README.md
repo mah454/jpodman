@@ -8,6 +8,7 @@
 * PodmanPodService
 * PodmanSystemService
 * PodmanVolumeService
+* PodmanExecService
 
 ### Usage:
 
@@ -18,7 +19,7 @@ Add dependency to pom.xml
 <dependency>
     <groupId>ir.moke</groupId>
     <artifactId>jpodman</artifactId>
-    <version>2.1.1</version>
+    <version>3.0</version>
 </dependency>
 ```
 
