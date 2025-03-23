@@ -15,7 +15,7 @@ public class PodmanIO {
         this.port = port;
     }
 
-    public void exec(String execId, ExecStartInstance execStartInstance, InputStream stdIn, OutputStream stdOut) throws Exception {
+    public void exec(String execId, ExecStartInstance execStartInstance, InputStream stdIn, OutputStream stdOut) {
         try (Socket socket = new Socket(host, port)) {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -31,7 +31,7 @@ public class PodmanIO {
                     Content-Length: %s
                     
                     %s
-                    """.formatted(PODMAN_API_VERSION,execId, host, port, length, body);
+                    """.formatted(PODMAN_API_VERSION, execId, host, port, length, body);
             writer.write(requestHeader);
             writer.flush();
 
@@ -63,10 +63,12 @@ public class PodmanIO {
                 writer.print(new String(buffer, 0, bytesRead));
                 writer.flush();
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void attach(String containerId, InputStream stdIn, OutputStream stdOut) throws Exception {
+    public void attach(String containerId, InputStream stdIn, OutputStream stdOut) {
         // Create a tcp connection
         try (Socket socket = new Socket(host, port)) {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -79,7 +81,7 @@ public class PodmanIO {
                     Upgrade: tcp
                     Connection: Upgrade
                     
-                    """.formatted(PODMAN_API_VERSION,containerId,host,port);
+                    """.formatted(PODMAN_API_VERSION, containerId, host, port);
             writer.write(requestHeader);
             writer.flush();
 
@@ -112,6 +114,8 @@ public class PodmanIO {
                 writer.print(new String(buffer, 0, bytesRead));
                 writer.flush();
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
