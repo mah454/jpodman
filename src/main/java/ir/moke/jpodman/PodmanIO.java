@@ -53,7 +53,7 @@ public class PodmanIO {
             }
 
             es.execute(() -> processOutputStream(stdOut, socket));
-            es.execute(() -> processInputStream(stdIn, writer));
+            processInputStream(stdIn, writer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +85,7 @@ public class PodmanIO {
             }
 
             es.execute(() -> processOutputStream(stdOut, socket));
-            es.execute(() -> processInputStream(stdIn, writer));
+            processInputStream(stdIn, writer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
