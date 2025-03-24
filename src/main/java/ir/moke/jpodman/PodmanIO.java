@@ -2,10 +2,16 @@ package ir.moke.jpodman;
 
 import ir.moke.jpodman.pojo.ExecStartInstance;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PodmanIO {
     private static final String PODMAN_API_VERSION = "v5.0.0";
@@ -25,7 +31,7 @@ public class PodmanIO {
         this.es = es;
     }
 
-    public void exec(String execId, ExecStartInstance execStartInstance, InputStream stdIn, OutputStream stdOut) {
+    public void exec(String execId, ExecStartInstance execStartInstance, Supplier<byte[]> stdInSupplier, Consumer<byte[]> stdOutConsumer) {
         try (Socket socket = new Socket(host, port)) {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -52,14 +58,14 @@ public class PodmanIO {
                 }
             }
 
-            es.execute(() -> processOutputStream(stdOut, socket));
-            processInputStream(stdIn, writer);
+            es.execute(() -> processOutputStream(socket, stdOutConsumer));
+            processInputStream(socket, stdInSupplier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void attach(String containerId, InputStream stdIn, OutputStream stdOut) {
+    public void attach(String containerId, Supplier<byte[]> stdInSupplier, Consumer<byte[]> stdOutConsumer) {
         // Create a tcp connection
         try (Socket socket = new Socket(host, port)) {
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -84,38 +90,32 @@ public class PodmanIO {
                 }
             }
 
-            es.execute(() -> processOutputStream(stdOut, socket));
-            processInputStream(stdIn, writer);
+            es.execute(() -> processOutputStream(socket, stdOutConsumer));
+            processInputStream(socket, stdInSupplier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void processInputStream(InputStream stdIn, PrintWriter writer) {
-        if (stdIn != null) {
+    private static void processInputStream(Socket socket, Supplier<byte[]> stdInSupplier) {
+        if (stdInSupplier != null) {
             // Read input from the user and send it to the container
             try {
-
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = stdIn.read(buffer)) != -1) {
-                    writer.print(new String(buffer, 0, bytesRead));
-                    writer.flush();
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Podman input stream socket io error");
+                socket.getOutputStream().write(stdInSupplier.get());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    private static void processOutputStream(OutputStream stdOut, Socket socket) {
-        if (stdOut != null) {
+    private static void processOutputStream(Socket socket, Consumer<byte[]> stdOutConsumer) {
+        if (stdOutConsumer != null) {
             // Start a thread to read output from the container
             try {
-                int data;
-                while ((data = socket.getInputStream().read()) != -1) {
-                    stdOut.write(data);
-                    stdOut.flush();
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = socket.getInputStream().read(buffer)) != -1) {
+                    stdOutConsumer.accept(Arrays.copyOf(buffer, bytesRead));
                 }
             } catch (IOException e) {
                 throw new RuntimeException("Podman output stream socket io error");
