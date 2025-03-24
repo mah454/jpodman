@@ -9,13 +9,20 @@ import java.util.concurrent.Executors;
 
 public class PodmanIO {
     private static final String PODMAN_API_VERSION = "v5.0.0";
-    private static final ExecutorService es = Executors.newVirtualThreadPerTaskExecutor();
+    private final ExecutorService es;
     private final String host;
     private final int port;
 
     public PodmanIO(String host, int port) {
         this.host = host;
         this.port = port;
+        this.es = Executors.newVirtualThreadPerTaskExecutor();
+    }
+
+    public PodmanIO(String host, int port, ExecutorService es) {
+        this.host = host;
+        this.port = port;
+        this.es = es;
     }
 
     public void exec(String execId, ExecStartInstance execStartInstance, InputStream stdIn, OutputStream stdOut) {
