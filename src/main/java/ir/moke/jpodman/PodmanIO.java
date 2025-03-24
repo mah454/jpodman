@@ -4,9 +4,12 @@ import ir.moke.jpodman.pojo.ExecStartInstance;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PodmanIO {
     private static final String PODMAN_API_VERSION = "v5.0.0";
+    private static final ExecutorService es = Executors.newVirtualThreadPerTaskExecutor();
     private final String host;
     private final int port;
 
@@ -42,31 +45,8 @@ public class PodmanIO {
                 }
             }
 
-            if (stdOut != null) {
-                // Start a thread to read output from the container
-                Thread outputThread = new Thread(() -> {
-                    try {
-                        int data;
-                        while ((data = socket.getInputStream().read()) != -1) {
-                            stdOut.write(data);
-                            stdOut.flush();
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException("Podman exec socket closed");
-                    }
-                });
-                outputThread.start();
-            }
-
-            if (stdIn != null) {
-                // Read input from the user and send it to the container
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = stdIn.read(buffer)) != -1) {
-                    writer.print(new String(buffer, 0, bytesRead));
-                    writer.flush();
-                }
-            }
+            es.execute(() -> processOutputStream(stdOut, socket));
+            es.execute(() -> processInputStream(stdIn, writer));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -97,33 +77,42 @@ public class PodmanIO {
                 }
             }
 
-            if (stdOut != null) {
-                // Start a thread to read output from the container
-                Thread outputThread = new Thread(() -> {
-                    try {
-                        int data;
-                        while ((data = socket.getInputStream().read()) != -1) {
-                            stdOut.write(data);
-                            stdOut.flush();
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                outputThread.start();
-            }
+            es.execute(() -> processOutputStream(stdOut, socket));
+            es.execute(() -> processInputStream(stdIn, writer));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            if (stdIn != null) {
-                // Read input from the user and send it to the container
+    private static void processInputStream(InputStream stdIn, PrintWriter writer) {
+        if (stdIn != null) {
+            // Read input from the user and send it to the container
+            try {
+
                 byte[] buffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = stdIn.read(buffer)) != -1) {
                     writer.print(new String(buffer, 0, bytesRead));
                     writer.flush();
                 }
+            } catch (Exception e) {
+                throw new RuntimeException("Podman input stream socket io error");
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }
+    }
+
+    private static void processOutputStream(OutputStream stdOut, Socket socket) {
+        if (stdOut != null) {
+            // Start a thread to read output from the container
+            try {
+                int data;
+                while ((data = socket.getInputStream().read()) != -1) {
+                    stdOut.write(data);
+                    stdOut.flush();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Podman output stream socket io error");
+            }
         }
     }
 }
