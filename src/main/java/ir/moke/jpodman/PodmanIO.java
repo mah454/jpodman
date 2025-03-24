@@ -42,26 +42,30 @@ public class PodmanIO {
                 }
             }
 
-            // Start a thread to read output from the container
-            Thread outputThread = new Thread(() -> {
-                try {
-                    int data;
-                    while ((data = socket.getInputStream().read()) != -1) {
-                        stdOut.write(data);
-                        stdOut.flush();
+            if (stdOut != null) {
+                // Start a thread to read output from the container
+                Thread outputThread = new Thread(() -> {
+                    try {
+                        int data;
+                        while ((data = socket.getInputStream().read()) != -1) {
+                            stdOut.write(data);
+                            stdOut.flush();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException("Podman exec socket closed");
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException("Podman exec socket closed");
-                }
-            });
-            outputThread.start();
+                });
+                outputThread.start();
+            }
 
-            // Read input from the user and send it to the container
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = stdIn.read(buffer)) != -1) {
-                writer.print(new String(buffer, 0, bytesRead));
-                writer.flush();
+            if (stdIn != null) {
+                // Read input from the user and send it to the container
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = stdIn.read(buffer)) != -1) {
+                    writer.print(new String(buffer, 0, bytesRead));
+                    writer.flush();
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -93,26 +97,30 @@ public class PodmanIO {
                 }
             }
 
-            // Start a thread to read output from the container
-            Thread outputThread = new Thread(() -> {
-                try {
-                    int data;
-                    while ((data = socket.getInputStream().read()) != -1) {
-                        stdOut.write(data);
-                        stdOut.flush();
+            if (stdOut != null) {
+                // Start a thread to read output from the container
+                Thread outputThread = new Thread(() -> {
+                    try {
+                        int data;
+                        while ((data = socket.getInputStream().read()) != -1) {
+                            stdOut.write(data);
+                            stdOut.flush();
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            outputThread.start();
+                });
+                outputThread.start();
+            }
 
-            // Read input from the user and send it to the container
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = stdIn.read(buffer)) != -1) {
-                writer.print(new String(buffer, 0, bytesRead));
-                writer.flush();
+            if (stdIn != null) {
+                // Read input from the user and send it to the container
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = stdIn.read(buffer)) != -1) {
+                    writer.print(new String(buffer, 0, bytesRead));
+                    writer.flush();
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
