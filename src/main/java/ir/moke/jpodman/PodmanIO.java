@@ -98,28 +98,25 @@ public class PodmanIO {
     }
 
     private static void processInputStream(Socket socket, Supplier<byte[]> stdInSupplier) {
-        if (stdInSupplier != null) {
+        try {
             // Read input from the user and send it to the container
-            try {
-                socket.getOutputStream().write(stdInSupplier.get());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            socket.getOutputStream().write(stdInSupplier.get());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     private static void processOutputStream(Socket socket, Consumer<byte[]> stdOutConsumer) {
-        if (stdOutConsumer != null) {
-            // Start a thread to read output from the container
-            try {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = socket.getInputStream().read(buffer)) != -1) {
-                    stdOutConsumer.accept(Arrays.copyOf(buffer, bytesRead));
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("Podman output stream socket io error");
+        // Start a thread to read output from the container
+        try {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = socket.getInputStream().read(buffer)) != -1) {
+                stdOutConsumer.accept(Arrays.copyOf(buffer, bytesRead));
             }
+        } catch (IOException e) {
+            throw new RuntimeException("Podman output stream socket io error");
         }
+
     }
 }
