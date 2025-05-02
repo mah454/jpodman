@@ -1,11 +1,12 @@
 package ir.moke.jpodman;
 
-import ir.moke.jpodman.pojo.SearchImage;
 import ir.moke.jpodman.service.PodmanImageService;
 import org.junit.jupiter.api.*;
 
 import java.net.http.HttpResponse;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ImageTest {
@@ -18,7 +19,7 @@ public class ImageTest {
     @Order(0)
     public void imagePull() {
         HttpResponse<String> response = podmanImageService.imagePull(IMAGE_REGISTRY + "ubuntu", true);
-        Assertions.assertEquals(200, response.statusCode());
+        assertEquals(200, response.statusCode());
         System.out.println(response.body());
     }
 
@@ -26,7 +27,7 @@ public class ImageTest {
     @Order(1)
     public void imageList() {
         HttpResponse<String> response = podmanImageService.imageList(true);
-        Assertions.assertEquals(200, response.statusCode());
+        assertEquals(200, response.statusCode());
         Assertions.assertNotNull(response.body());
     }
 
@@ -34,7 +35,7 @@ public class ImageTest {
     @Order(2)
     public void imageExists() {
         HttpResponse<Void> response = podmanImageService.imageExists("busybox");
-        Assertions.assertEquals(response.statusCode(), 204);
+        assertEquals(204, response.statusCode());
     }
 
     @Test
@@ -48,27 +49,27 @@ public class ImageTest {
     @Order(4)
     public void imageRemove() {
         HttpResponse<Void> response = podmanImageService.imageRemove(List.of("busybox"), false, false);
-        Assertions.assertEquals(response.statusCode(), 200);
+        assertEquals(200, response.statusCode());
     }
 
     @Test
     @Order(5)
     public void checkExistsAfterRemove() {
         HttpResponse<Void> response = podmanImageService.imageExists("busybox");
-        Assertions.assertEquals(response.statusCode(), 204);
+        assertEquals(204, response.statusCode());
     }
 
     @Test
     @Order(6)
     public void imageSearch() {
-        List<SearchImage> searchImageList = podmanImageService.imageSearch("mysql");
-        Assertions.assertTrue(searchImageList.size() > 1);
+        HttpResponse<String> response = podmanImageService.imageSearch("mysql");
+        assertEquals(200, response.statusCode());
     }
 
     @Test
     @Order(7)
     public void imagePrune() {
         HttpResponse<String> response = podmanImageService.imagePrune();
-        Assertions.assertEquals(response.statusCode(), 200);
+        assertEquals(200, response.statusCode());
     }
 }
