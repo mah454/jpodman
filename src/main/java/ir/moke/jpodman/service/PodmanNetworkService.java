@@ -1,13 +1,11 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.kafir.annotation.*;
 import ir.moke.jpodman.pojo.Network;
 import ir.moke.jpodman.pojo.NetworkConnectContainer;
 import ir.moke.jpodman.pojo.NetworkDisconnectContainer;
-import ir.moke.jpodman.pojo.NetworkInfo;
+import ir.moke.kafir.annotation.*;
 
 import java.net.http.HttpResponse;
-import java.util.List;
 
 public interface PodmanNetworkService {
 
@@ -27,5 +25,5 @@ public interface PodmanNetworkService {
     HttpResponse<String> networkCreate(Network network);
 
     @GET("networks/json")
-    List<NetworkInfo> networkList();
+    HttpResponse<String> networkList();
 }

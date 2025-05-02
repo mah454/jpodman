@@ -9,26 +9,14 @@ public class Volume {
     private String name;
     @JsonProperty("Driver")
     private String driver;
-    @JsonProperty("Mountpoint")
-    private String mountPoint;
-    @JsonProperty("CreatedAt")
-    private String createdAt;
+    @JsonProperty("IgnoreIfExists")
+    private Boolean ignoreIfExists;
+    @JsonProperty("Label")
+    private Map<String, String> label;
     @JsonProperty("Labels")
     private Map<String, String> labels;
-    @JsonProperty("Scope")
-    private String scope;
     @JsonProperty("Options")
     private Map<String, String> options;
-    @JsonProperty("Anonymous")
-    private Boolean anonymous;
-    @JsonProperty("MountCount")
-    private Integer mountCount;
-    @JsonProperty("NeedsCopyUp")
-    private Boolean needsCopyUp;
-    @JsonProperty("NeedsChown")
-    private Boolean needsChown;
-    @JsonProperty("LockNumber")
-    private Integer lockNumber;
 
     public String getName() {
         return name;
@@ -46,12 +34,20 @@ public class Volume {
         this.driver = driver;
     }
 
-    public String getMountPoint() {
-        return mountPoint;
+    public Boolean getIgnoreIfExists() {
+        return ignoreIfExists;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public void setIgnoreIfExists(Boolean ignoreIfExists) {
+        this.ignoreIfExists = ignoreIfExists;
+    }
+
+    public Map<String, String> getLabel() {
+        return label;
+    }
+
+    public void setLabel(Map<String, String> label) {
+        this.label = label;
     }
 
     public Map<String, String> getLabels() {
@@ -62,35 +58,11 @@ public class Volume {
         this.labels = labels;
     }
 
-    public String getScope() {
-        return scope;
-    }
-
     public Map<String, String> getOptions() {
         return options;
     }
 
     public void setOptions(Map<String, String> options) {
         this.options = options;
-    }
-
-    public Boolean getAnonymous() {
-        return anonymous;
-    }
-
-    public Integer getMountCount() {
-        return mountCount;
-    }
-
-    public Boolean getNeedsCopyUp() {
-        return needsCopyUp;
-    }
-
-    public Boolean getNeedsChown() {
-        return needsChown;
-    }
-
-    public Integer getLockNumber() {
-        return lockNumber;
     }
 }

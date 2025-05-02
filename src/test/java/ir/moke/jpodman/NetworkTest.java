@@ -2,7 +2,6 @@ package ir.moke.jpodman;
 
 import ir.moke.jpodman.pojo.Network;
 import ir.moke.jpodman.pojo.NetworkDriver;
-import ir.moke.jpodman.pojo.NetworkInfo;
 import ir.moke.jpodman.pojo.Subnet;
 import ir.moke.jpodman.service.PodmanNetworkService;
 import org.junit.jupiter.api.*;
@@ -35,11 +34,9 @@ public class NetworkTest {
     @Test
     @Order(1)
     public void networkList() {
-        List<NetworkInfo> networkInfoList = podmanNetworkService.networkList();
-        Assertions.assertFalse(networkInfoList.isEmpty());
-        for (NetworkInfo networkInfo : networkInfoList) {
-            System.out.println(networkInfo.getNetworkInterface());
-        }
+        HttpResponse<String> response = podmanNetworkService.networkList();
+        Assertions.assertEquals(200, response.statusCode());
+        System.out.println(response.body());
     }
 
     @Test

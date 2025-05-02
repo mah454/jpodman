@@ -1,9 +1,8 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.kafir.annotation.*;
 import ir.moke.jpodman.pojo.Pod;
-import ir.moke.jpodman.pojo.PodInfo;
 import ir.moke.jpodman.pojo.PodStats;
+import ir.moke.kafir.annotation.*;
 
 import java.net.http.HttpResponse;
 import java.util.List;
@@ -47,7 +46,7 @@ public interface PodmanPodService {
     HttpResponse<String> podTop(@PathParameter("name") String name, @PathParameter("stream") Boolean stream);
 
     @GET("pods/json")
-    List<PodInfo> podList();
+    HttpResponse<String> podList();
 
     @POST("pods/prune")
     HttpResponse<Void> podPrune();

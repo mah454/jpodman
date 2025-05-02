@@ -4,7 +4,6 @@ import ir.moke.jpodman.pojo.Volume;
 import ir.moke.kafir.annotation.*;
 
 import java.net.http.HttpResponse;
-import java.util.List;
 
 public interface PodmanVolumeService {
 
@@ -12,13 +11,13 @@ public interface PodmanVolumeService {
     HttpResponse<Void> volumeRemove(@PathParameter("name") String name, @QueryParameter("force") boolean force);
 
     @GET("volumes/{name}/json")
-    String volumeInspect(@PathParameter("name") String name);
+    HttpResponse<String> volumeInspect(@PathParameter("name") String name);
 
     @POST("volumes/create")
-    Volume volumeCreate(Volume volume);
+    HttpResponse<String> volumeCreate(Volume volume);
 
     @GET("volumes/json")
-    List<Volume> volumeList();
+    HttpResponse<String> volumeList();
 
     @POST("volumes/prune")
     HttpResponse<Void> volumePrune();

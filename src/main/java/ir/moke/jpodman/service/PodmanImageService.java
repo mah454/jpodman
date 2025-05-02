@@ -1,6 +1,5 @@
 package ir.moke.jpodman.service;
 
-import ir.moke.jpodman.pojo.Image;
 import ir.moke.jpodman.pojo.SearchImage;
 import ir.moke.kafir.annotation.*;
 
@@ -17,7 +16,7 @@ public interface PodmanImageService {
     CompletableFuture<HttpResponse<String>> imagePullAsync(@QueryParameter("reference") String reference);
 
     @GET("images/json")
-    List<Image> imageList(@QueryParameter("all") boolean all);
+    HttpResponse<String> imageList(@QueryParameter("all") boolean all);
 
     @GET("images/search")
     List<SearchImage> imageSearch(@QueryParameter("term") String term);
@@ -29,7 +28,7 @@ public interface PodmanImageService {
     HttpResponse<Void> imageRemove(@QueryParameter("images") List<String> images, @QueryParameter("all") boolean all, @QueryParameter("force") boolean force);
 
     @GET("images/{name}/json")
-    HttpResponse<Image> imageInspect(@PathParameter("name") String name);
+    HttpResponse<String> imageInspect(@PathParameter("name") String name);
 
     @GET("images/{name}/exists")
     HttpResponse<Void> imageExists(@PathParameter("name") String name);

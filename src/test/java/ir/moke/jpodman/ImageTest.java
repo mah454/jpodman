@@ -1,6 +1,5 @@
 package ir.moke.jpodman;
 
-import ir.moke.jpodman.pojo.Image;
 import ir.moke.jpodman.pojo.SearchImage;
 import ir.moke.jpodman.service.PodmanImageService;
 import org.junit.jupiter.api.*;
@@ -26,10 +25,9 @@ public class ImageTest {
     @Test
     @Order(1)
     public void imageList() {
-        List<Image> images = podmanImageService.imageList(true);
-        Assertions.assertNotNull(images);
-        Assertions.assertFalse(images.isEmpty());
-        Assertions.assertDoesNotThrow(() -> images.getFirst().getNames());
+        HttpResponse<String> response = podmanImageService.imageList(true);
+        Assertions.assertEquals(200, response.statusCode());
+        Assertions.assertNotNull(response.body());
     }
 
     @Test
@@ -42,8 +40,8 @@ public class ImageTest {
     @Test
     @Order(3)
     public void imageInspect() {
-        HttpResponse<Image> inspect = podmanImageService.imageInspect("busybox");
-        System.out.println(inspect.body().getId());
+        HttpResponse<String> inspect = podmanImageService.imageInspect("busybox");
+        System.out.println(inspect.body());
     }
 
     @Test
@@ -72,11 +70,5 @@ public class ImageTest {
     public void imagePrune() {
         HttpResponse<String> response = podmanImageService.imagePrune();
         Assertions.assertEquals(response.statusCode(), 200);
-    }
-
-    private static void checkAsync(List<Image> images) {
-        for (Image image : images) {
-            System.out.println(image);
-        }
     }
 }

@@ -1,11 +1,9 @@
 package ir.moke.jpodman.service;
 
 import ir.moke.jpodman.pojo.Container;
-import ir.moke.jpodman.pojo.ContainerInfo;
 import ir.moke.kafir.annotation.*;
 
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface PodmanContainerService {
@@ -22,7 +20,7 @@ public interface PodmanContainerService {
                                        @QueryParameter("v") boolean deleteVolumes);
 
     @GET("containers/{name}/json")
-    String containerInspect(@PathParameter("name") String name);
+    HttpResponse<String> containerInspect(@PathParameter("name") String name);
 
     @POST("containers/{name}/kill")
     HttpResponse<Void> containerKill(@PathParameter("name") String name);
@@ -80,7 +78,7 @@ public interface PodmanContainerService {
     CompletableFuture<HttpResponse<String>> containerCreateAsync(Container container);
 
     @GET("containers/json")
-    List<ContainerInfo> containerList(@QueryParameter("all") Boolean all, @QueryParameter("pod") Boolean pod);
+    HttpResponse<String> containerList(@QueryParameter("all") Boolean all, @QueryParameter("pod") Boolean pod);
 
     @POST("containers/prune")
     void containerPrune();

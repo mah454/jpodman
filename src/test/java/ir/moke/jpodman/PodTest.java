@@ -2,7 +2,6 @@ package ir.moke.jpodman;
 
 import ir.moke.jpodman.pojo.Container;
 import ir.moke.jpodman.pojo.Pod;
-import ir.moke.jpodman.pojo.PodInfo;
 import ir.moke.jpodman.pojo.PodStats;
 import ir.moke.jpodman.service.PodmanContainerService;
 import ir.moke.jpodman.service.PodmanPodService;
@@ -92,8 +91,8 @@ public class PodTest {
     @Test
     @Order(6)
     public void podList() {
-        List<PodInfo> podInfos = podmanPodService.podList();
-        Assertions.assertFalse(podInfos.isEmpty());
+        HttpResponse<String> podInfos = podmanPodService.podList();
+        Assertions.assertNotNull(podInfos);
     }
 
     @Test

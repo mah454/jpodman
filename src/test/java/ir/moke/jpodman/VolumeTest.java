@@ -5,7 +5,6 @@ import ir.moke.jpodman.service.PodmanVolumeService;
 import org.junit.jupiter.api.*;
 
 import java.net.http.HttpResponse;
-import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VolumeTest {
@@ -18,19 +17,16 @@ public class VolumeTest {
     public void volumeCreate() {
         Volume volume = new Volume();
         volume.setName("sample");
-        volume = podmanVolumeService.volumeCreate(volume);
-        Assertions.assertNotNull(volume.getCreatedAt());
-        System.out.println(volume.getMountPoint());
+        HttpResponse<String> response = podmanVolumeService.volumeCreate(volume);
+        Assertions.assertNotNull(response.body());
+        System.out.println(response.body());
     }
 
     @Test
     @Order(1)
     public void volumeList() {
-        List<Volume> volumes = podmanVolumeService.volumeList();
-        Assertions.assertFalse(volumes.isEmpty());
-        for (Volume volume : volumes) {
-            System.out.println(volume.getMountPoint());
-        }
+        HttpResponse<String> response = podmanVolumeService.volumeList();
+        Assertions.assertEquals(200, response.statusCode());
     }
 
     @Test
