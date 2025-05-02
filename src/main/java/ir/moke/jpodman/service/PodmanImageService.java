@@ -10,10 +10,10 @@ import java.util.concurrent.CompletableFuture;
 public interface PodmanImageService {
 
     @POST("images/pull")
-    HttpResponse<String> imagePull(@QueryParameter("reference") String reference);
+    HttpResponse<String> imagePull(@QueryParameter("reference") String reference, @QueryParameter("compatMode") boolean compatMode);
 
     @POST("images/pull")
-    CompletableFuture<HttpResponse<String>> imagePullAsync(@QueryParameter("reference") String reference);
+    CompletableFuture<HttpResponse<String>> imagePullAsync(@QueryParameter("reference") String reference, @QueryParameter("compatMode") boolean compatMode);
 
     @GET("images/json")
     HttpResponse<String> imageList(@QueryParameter("all") boolean all);

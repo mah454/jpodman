@@ -99,6 +99,17 @@ public class PodmanSSE implements Closeable {
         }
     }
 
+    public void pullImage(String imageName, Consumer<String> eventConsumer) {
+        URI targetURI = baseURI.resolve("images/pull?reference=%s&compatMode=true".formatted(imageName));
+        try {
+            var request = HttpRequest.newBuilder(targetURI).POST(HttpRequest.BodyPublishers.noBody()).build();
+            Stream<String> stream = client.send(request, HttpResponse.BodyHandlers.ofLines()).body();
+            stream.forEach(eventConsumer);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void close() {
         if (executorService != null) {

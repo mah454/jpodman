@@ -17,8 +17,8 @@ public class ImageTest {
     @Test
     @Order(0)
     public void imagePull() {
-        HttpResponse<String> response = podmanImageService.imagePull(IMAGE_REGISTRY + "busybox");
-        Assertions.assertEquals(response.statusCode(), 200);
+        HttpResponse<String> response = podmanImageService.imagePull(IMAGE_REGISTRY + "ubuntu", true);
+        Assertions.assertEquals(200, response.statusCode());
         System.out.println(response.body());
     }
 
