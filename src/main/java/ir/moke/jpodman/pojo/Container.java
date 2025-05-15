@@ -40,6 +40,8 @@ public class Container {
     private Map<String, NetworkConnect> networks;
     @JsonProperty("netns")
     private Map<String, String> netns;
+    @JsonProperty("terminal")
+    private Boolean terminal;
 
     public String getName() {
         return name;
@@ -215,5 +217,13 @@ public class Container {
 
     public void setNetns(Map<String, String> netns) {
         this.netns = netns;
+    }
+
+    public Boolean getTerminal() {
+        return terminal;
+    }
+
+    public void setTerminal(Boolean terminal) {
+        this.terminal = terminal;
     }
 }
