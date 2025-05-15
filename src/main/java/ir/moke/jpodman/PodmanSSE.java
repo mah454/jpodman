@@ -110,6 +110,10 @@ public class PodmanSSE implements Closeable {
         }
     }
 
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
     @Override
     public void close() {
         if (executorService != null) {
